@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" fill="none">
+  <!-- Body -->
+  <ellipse cx="60" cy="72" rx="18" ry="26" fill="#0000CD"/>
+  <!-- Neck -->
+  <rect x="55" y="44" width="10" height="22" rx="5" fill="#0000CD"/>
+  <!-- Head -->
+  <ellipse cx="60" cy="38" rx="11" ry="11" fill="#0000CD"/>
+  <!-- White belly patch -->
+  <ellipse cx="60" cy="78" rx="10" ry="15" fill="white"/>
+  <!-- Beak -->
+  <polygon points="60,28 75,32 60,36" fill="#E05A00"/>
+  <!-- Eye -->
+  <circle cx="65" cy="35" r="2.5" fill="white"/>
+  <circle cx="65.5" cy="35" r="1.2" fill="#0a0a0a"/>
+  <!-- Left wing -->
+  <path d="M42 65 Q25 55 22 75 Q30 70 42 78 Z" fill="#0000CD"/>
+  <!-- Right wing -->
+  <path d="M78 65 Q95 55 98 75 Q90 70 78 78 Z" fill="#0000CD"/>
+  <!-- Left leg -->
+  <line x1="52" y1="96" x2="46" y2="120" stroke="#E05A00" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Right leg -->
+  <line x1="68" y1="96" x2="74" y2="120" stroke="#E05A00" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Left foot -->
+  <line x1="46" y1="120" x2="36" y2="122" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <line x1="46" y1="120" x2="44" y2="128" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <line x1="46" y1="120" x2="52" y2="128" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <!-- Right foot -->
+  <line x1="74" y1="120" x2="84" y2="122" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <line x1="74" y1="120" x2="76" y2="128" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <line x1="74" y1="120" x2="68" y2="128" stroke="#E05A00" stroke-width="3" stroke-linecap="round"/>
+  <!-- Red beak tip accent -->
+  <circle cx="75" cy="31" r="2" fill="#C04400"/>
+</svg>
