@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Nav from '../components/Nav';
 
 export default function Inschrijven() {
   const [formData, setFormData] = useState({
@@ -67,23 +68,7 @@ export default function Inschrijven() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
-      {/* Header */}
-      <header className="px-4 py-6">
-        <div className="mx-auto max-w-6xl">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity w-fit">
-            <Image 
-              src="/logo.svg" 
-              alt="Ooievaar logo" 
-              width={50} 
-              height={50}
-              className="w-12 h-12 md:w-16 md:h-16"
-            />
-            <div className="text-[#0000CD] font-bold text-lg md:text-xl italic">
-              In de schaduw van de ooievaar
-            </div>
-          </Link>
-        </div>
-      </header>
+      <Nav />
 
       {/* Form Section */}
       <section className="px-4 py-12 md:py-16">

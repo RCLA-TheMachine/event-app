@@ -2,36 +2,22 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import Nav from './components/Nav';
 
 export default function Home() {
   const scheduleItems = [
     { time: '09:00', title: 'Ontvangst met koffie', description: 'Welkom bij de Citadel van Diest' },
     { time: '09:30', title: 'Start wandeling', description: 'Vertrek voor een inspirerende wandeling' },
     { time: '12:00', title: 'Aankomst citadel', description: 'Gezamenlijke lunch onderweg' },
-    { time: '14:00', title: 'Spreker 1', description: 'Verder langs mooie plekken' },
+    { time: '14:00', title: 'Spreker 1', description: '...' },
     { time: '15:30', title: 'Muziek', description: 'Even op adem komen' },
-    { time: '17:00', title: 'Afsluiting', description: 'Terug bij de Citadel met receptie' },
+    { time: '17:00', title: 'Spreker 2', description: '...' },
+    { time: '18:00', title: 'Muziek', description: '...' }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
-      {/* Navigation/Header */}
-      <header className="px-4 py-6">
-        <div className="mx-auto max-w-6xl flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Image 
-              src="/logo.svg" 
-              alt="Ooievaar logo" 
-              width={50} 
-              height={50}
-              className="w-12 h-12 md:w-16 md:h-16"
-            />
-            <div className="text-[#0000CD] font-bold text-lg md:text-xl italic">
-              In de schaduw van de ooievaar
-            </div>
-          </div>
-        </div>
-      </header>
+      <Nav />
 
       {/* Hero Section */}
       <section className="px-4 py-12 md:py-20">
@@ -40,28 +26,17 @@ export default function Home() {
             29 augustus 2026 • Citadel Diest
           </div>
           <h1 className="mb-8 text-5xl font-bold tracking-tight text-[#0000CD] sm:text-6xl md:text-7xl lg:text-8xl italic leading-tight">
-            In de schaduw
-            <span className="block mt-2">
-              van de ooievaar
-            </span>
-          </h1>
-          <div className="mb-8 text-3xl md:text-4xl font-semibold text-[#0000CD]/80">
             Wandeling 2026
-          </div>
+          </h1>
           <p className="mx-auto mb-12 max-w-2xl text-lg text-[#0000CD]/70 md:text-xl leading-relaxed">
             Sluit je aan bij onze wandeling door het prachtige landschap rondom Diest. 
             Een dag vol natuur, gezelligheid en inspirerende momenten.
           </p>
-          <Link href="/inschrijven">
-            <button className="inline-flex items-center justify-center rounded-full bg-[#0000CD] px-10 py-5 text-lg font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-[#0000B8] hover:shadow-xl active:scale-95 md:px-12 md:py-6">
-              Schrijf je in
-            </button>
-          </Link>
         </div>
       </section>
 
       {/* Schedule Section */}
-      <section className="px-4 py-16 md:py-24">
+      <section id="programma" className="px-4 py-16 md:py-6">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#0000CD] md:text-4xl italic">
             Programma van de dag

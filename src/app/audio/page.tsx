@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Nav from '../components/Nav';
 
 const BAR_COUNT = 60;
 
@@ -129,20 +130,7 @@ export default function AudioPage() {
       <div className="absolute -left-24 top-16 h-80 w-80 rounded-full bg-white/50 blur-3xl" />
       <div className="absolute -right-20 bottom-20 h-72 w-72 rounded-full bg-[#0000CD]/10 blur-3xl" />
 
-      {/* Header */}
-      <header className="relative px-4 py-6 md:px-8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-          >
-            <Image src="/logo.svg" alt="Ooievaar logo" width={50} height={50} className="w-12 h-12 md:w-16 md:h-16" />
-            <div className="text-[#0000CD] font-bold text-lg md:text-xl italic">
-              In de schaduw van de ooievaar
-            </div>
-          </Link>
-        </div>
-      </header>
+      <Nav />
 
       {/* Player */}
       <main className="relative flex min-h-[calc(100vh-88px)] items-center justify-center px-4 pb-16">
