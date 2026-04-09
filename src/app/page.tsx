@@ -20,7 +20,7 @@ export default function Home() {
       <Nav />
 
       {/* Hero Section */}
-      <section className="px-4 py-12 md:py-10">
+      <section className="px-4 py-12 md:py-15">
         <div className="mx-auto max-w-6xl text-center">
           <div className="mb-8 inline-block rounded-full bg-[#0000CD]/10 px-6 py-3 text-sm font-semibold text-[#0000CD] border-2 border-[#0000CD]/20">
             29 augustus 2026 • Citadel Diest
