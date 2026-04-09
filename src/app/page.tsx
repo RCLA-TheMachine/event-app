@@ -36,7 +36,7 @@ export default function Home() {
       </section>
 
       {/* Schedule Section */}
-      <section id="programma" className="px-4 py-16 md:py-6">
+      <section id="programma" className="px-4 py-16 md:py-6 scroll-mt-24">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#0000CD] md:text-4xl italic">
             Programma van de dag
