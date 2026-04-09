@@ -26,7 +26,7 @@ export default function Nav() {
             height={50}
             className="w-12 h-12 md:w-16 md:h-16"
           />
-          <div className="text-[#0000CD] font-bold text-lg md:text-xl italic">
+          <div className="text-[#0000CD] font-bold text-sm md:text-xl italic">
             In de schaduw van de ooievaar
           </div>
         </Link>
