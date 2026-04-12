@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Nav from '../components/Nav';
+
+const PRICE_PER_PERSON = 30;
+const PRICE_PER_HAT = 15;
 
 export default function Inschrijven() {
   const [formData, setFormData] = useState({
@@ -12,16 +15,28 @@ export default function Inschrijven() {
     email: '',
     telefoon: '',
     aantal: '1',
+    petjes: '0',
     dieetwensen: '',
     opmerkingen: '',
+    avondeten: false,
   });
 
   const [submitted, setSubmitted] = useState(false);
 
+  const aantalPersonen = Math.max(1, parseInt(formData.aantal, 10) || 1);
+  const aantalPetjes = Math.max(0, parseInt(formData.petjes, 10) || 0);
+  const walkPrice = aantalPersonen * PRICE_PER_PERSON;
+  const hatPrice = aantalPetjes * PRICE_PER_HAT;
+  const totalPrice = walkPrice + hatPrice;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const target = e.target;
+    const value = target instanceof HTMLInputElement && target.type === 'checkbox'
+      ? target.checked
+      : target.value;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [target.name]: value,
     });
   };
 
@@ -38,11 +53,11 @@ export default function Inschrijven() {
         <div className="max-w-2xl w-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 border-4 border-[#0000CD]/20 text-center">
           <div className="flex justify-center mb-6">
             <Image 
-              src="/logo.svg" 
+              src="/logo_aaron_5.png" 
               alt="Ooievaar" 
               width={80} 
               height={80}
-              className="w-20 h-20 md:w-24 md:h-24"
+              className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover"
             />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-[#0000CD] mb-6 italic">
@@ -157,21 +172,36 @@ export default function Inschrijven() {
                 <label htmlFor="aantal" className="block text-[#0000CD] font-semibold mb-2">
                   Aantal personen *
                 </label>
-                <select
+                <input
+                  type="number"
                   id="aantal"
                   name="aantal"
                   required
+                  min={1}
                   value={formData.aantal}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-xl border-2 border-[#0000CD]/20 focus:border-[#0000CD] focus:outline-none focus:ring-2 focus:ring-[#0000CD]/20 transition-colors"
-                >
-                  <option value="1">1 persoon</option>
-                  <option value="2">2 personen</option>
-                  <option value="3">3 personen</option>
-                  <option value="4">4 personen</option>
-                  <option value="5">5 personen</option>
-                  <option value="6+">6+ personen</option>
-                </select>
+                  placeholder="1"
+                />
+                <p className="mt-1 text-sm text-[#0000CD]/60">€{PRICE_PER_PERSON} per persoon — lunch inbegrepen</p>
+              </div>
+
+              {/* Petjes */}
+              <div>
+                <label htmlFor="petjes" className="block text-[#0000CD] font-semibold mb-2">
+                  Aantal petjes
+                </label>
+                <input
+                  type="number"
+                  id="petjes"
+                  name="petjes"
+                  min={0}
+                  value={formData.petjes}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[#0000CD]/20 focus:border-[#0000CD] focus:outline-none focus:ring-2 focus:ring-[#0000CD]/20 transition-colors"
+                  placeholder="0"
+                />
+                <p className="mt-1 text-sm text-[#0000CD]/60">€{PRICE_PER_HAT} per petje</p>
               </div>
 
               {/* Opmerkingen */}
@@ -188,6 +218,54 @@ export default function Inschrijven() {
                   className="w-full px-4 py-3 rounded-xl border-2 border-[#0000CD]/20 focus:border-[#0000CD] focus:outline-none focus:ring-2 focus:ring-[#0000CD]/20 transition-colors resize-none"
                   placeholder="Eventuele vragen of opmerkingen..."
                 />
+              </div>
+
+              {/* Avondeten */}
+              <div>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="avondeten"
+                    checked={formData.avondeten}
+                    onChange={handleChange}
+                    className="mt-1 h-5 w-5 rounded border-2 border-[#0000CD]/30 text-[#0000CD] accent-[#0000CD] cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-[#0000CD] font-semibold">
+                      Ik wil graag mee-eten tijdens het avondmaal
+                    </span>
+                    <p className="mt-1 text-sm text-[#0000CD]/60">
+                      Het avondeten is niet inbegrepen in de inschrijvingsprijs. Dit is enkel een indicatie voor de organisatie om de juiste hoeveelheid eten te voorzien.
+                    </p>
+                  </div>
+                </label>
+              </div>
+
+              {/* Prijsberekening */}
+              <div className="rounded-xl border-2 border-[#0000CD]/20 bg-[#0000CD]/5 p-5">
+                <p className="text-[#0000CD] font-semibold mb-3">Totaalprijs</p>
+                <div className="space-y-1 text-sm text-[#0000CD]/70">
+                  <div className="flex justify-between">
+                    <span>{aantalPersonen} {aantalPersonen === 1 ? 'persoon' : 'personen'} × €{PRICE_PER_PERSON}</span>
+                    <span>€{walkPrice}</span>
+                  </div>
+                  <div className="flex justify-between pl-4 text-[#0000CD]/50 italic">
+                    <span>{aantalPersonen} × lunch</span>
+                    <span>inbegrepen</span>
+                  </div>
+                  {aantalPetjes > 0 && (
+                    <div className="flex justify-between">
+                      <span>{aantalPetjes} {aantalPetjes === 1 ? 'petje' : 'petjes'} × €{PRICE_PER_HAT}</span>
+                      <span>€{hatPrice}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#0000CD]/20">
+                  <span className="text-[#0000CD] font-semibold">Totaal</span>
+                  <p className="text-3xl font-bold text-[#0000CD]">
+                    €{totalPrice}
+                  </p>
+                </div>
               </div>
 
               {/* Submit Button */}

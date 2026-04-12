@@ -20,11 +20,11 @@ export default function Nav() {
         {/* Logo + title */}
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <Image
-            src="/logo.svg"
-            alt="Ooievaar logo"
+            src="/logo_aaron_5.png"
+            alt="Logo aaron"
             width={50}
             height={50}
-            className="w-12 h-12 md:w-16 md:h-16"
+            className="w-12 h-12 md:w-16 md:h-16 object-contain"
           />
           <div className="text-[#0000CD] font-bold text-base md:text-xl italic">
             In de schaduw van de ooievaar
@@ -50,7 +50,7 @@ export default function Nav() {
           <div className="relative">
             <button
               onClick={() => setAudioOpen((o) => !o)}
-              className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold text-[#0000CD]/75 hover:bg-[#0000CD]/8 hover:text-[#0000CD] transition-colors"
+              className="flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold text-[#0000CD]/75 hover:bg-[#0000CD]/8 hover:text-[#0000CD] transition-colors cursor-pointer"
             >
               Audio
               <svg
@@ -73,7 +73,7 @@ export default function Nav() {
                 <Link
                   href="/audio"
                   onClick={() => setAudioOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0000CD] hover:bg-[#0000CD]/6 transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-[#0000CD] hover:bg-[#0000CD]/6 transition-colors cursor-pointer"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="opacity-60">
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 7.97v8.05A4.5 4.5 0 0016.5 12z" />
@@ -85,7 +85,7 @@ export default function Nav() {
           </div>
 
           <Link href="/inschrijven">
-            <button className="ml-2 inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] hover:shadow-lg active:scale-95">
+            <button className="ml-2 inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] hover:shadow-lg active:scale-95 cursor-pointer">
               Schrijf je in
             </button>
           </Link>
@@ -132,7 +132,7 @@ export default function Nav() {
           {/* Audio sub-section */}
           <button
             onClick={() => setMobileAudioOpen((o) => !o)}
-            className="flex w-full items-center justify-between px-5 py-3 text-sm font-semibold text-[#0000CD]/80 hover:bg-[#0000CD]/5 hover:text-[#0000CD] transition-colors"
+            className="flex w-full items-center justify-between px-5 py-3 text-sm font-semibold text-[#0000CD]/80 hover:bg-[#0000CD]/5 hover:text-[#0000CD] transition-colors cursor-pointer"
           >
             Audio
             <svg
@@ -165,7 +165,7 @@ export default function Nav() {
 
           <div className="mt-2 border-t border-[#0000CD]/8 px-5 pt-3 pb-1">
             <Link href="/inschrijven" onClick={closeMobile}>
-              <button className="w-full inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] active:scale-95">
+              <button className="w-full inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] active:scale-95 cursor-pointer">
                 Schrijf je in
               </button>
             </Link>

@@ -20,7 +20,7 @@ export default function Home() {
       <Nav />
 
       {/* Hero Section */}
-      <section className="px-4 py-12 md:py-15">
+      <section className="px-4 py-4 md:py-15">
         <div className="mx-auto max-w-6xl text-center">
           <div className="mb-8 inline-block rounded-full bg-[#0000CD]/10 px-6 py-3 text-sm font-semibold text-[#0000CD] border-2 border-[#0000CD]/20">
             29 augustus 2026 • Citadel Diest
@@ -36,7 +36,7 @@ export default function Home() {
       </section>
 
       {/* Schedule Section */}
-      <section id="programma" className="px-4 py-16 md:py-6 scroll-mt-24">
+      <section id="programma" className="px-4 py-4 md:py-6 scroll-mt-24">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#0000CD] md:text-4xl italic">
             Programma van de dag
@@ -73,11 +73,11 @@ export default function Home() {
         <div className="mx-auto max-w-4xl rounded-3xl bg-[#0000CD] px-8 py-12 text-center shadow-2xl md:px-16 md:py-16 border-4 border-white">
           <div className="flex justify-center mb-6">
             <Image 
-              src="/logo.svg" 
-              alt="Ooievaar" 
+              src="/logo_aaron_5.png" 
+              alt="Logo" 
               width={80} 
               height={80}
-              className="w-20 h-20 md:w-24 md:h-24 brightness-0 invert"
+              className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover brightness-0 invert"
             />
           </div>
           <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl italic">
