@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Nav from '../components/Nav';
+import { supabase } from '../../lib/supabase';
 
 const PRICE_PER_PERSON = 30;
 const PRICE_PER_HAT = 15;
@@ -22,6 +23,8 @@ export default function Inschrijven() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const aantalPersonen = Math.max(1, parseInt(formData.aantal, 10) || 1);
   const aantalPetjes = Math.max(0, parseInt(formData.petjes, 10) || 0);
@@ -40,10 +43,57 @@ export default function Inschrijven() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Hier zou je de data naar een backend kunnen sturen
-    console.log('Inschrijving:', formData);
+    setLoading(true);
+    setError(null);
+
+    const { error: insertError } = await supabase
+      .from('inschrijvingen')
+      .insert({
+        voornaam: formData.voornaam,
+        achternaam: formData.achternaam,
+        email: formData.email,
+        telefoon: formData.telefoon,
+        aantal: aantalPersonen,
+        petjes: aantalPetjes,
+        opmerkingen: formData.opmerkingen || null,
+        avondeten: formData.avondeten,
+        totaalprijs: totalPrice,
+      });
+
+    setLoading(false);
+
+    if (insertError) {
+      setError('Er ging iets mis bij het opslaan. Probeer het opnieuw.');
+      console.error('Supabase insert error:', insertError);
+      return;
+    }
+
+    // Send confirmation email
+    try {
+      await fetch('/api/send-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          voornaam: formData.voornaam,
+          achternaam: formData.achternaam,
+          email: formData.email,
+          telefoon: formData.telefoon,
+          aantal: aantalPersonen,
+          petjes: aantalPetjes,
+          opmerkingen: formData.opmerkingen || null,
+          avondeten: formData.avondeten,
+          totaalprijs: totalPrice,
+          walkPrice,
+          hatPrice,
+        }),
+      });
+    } catch (emailErr) {
+      // Don't block submission if email fails
+      console.error('Email send error:', emailErr);
+    }
+
     setSubmitted(true);
   };
 
@@ -269,12 +319,18 @@ export default function Inschrijven() {
               </div>
 
               {/* Submit Button */}
+              {error && (
+                <div className="rounded-xl bg-red-50 border-2 border-red-200 p-4 text-red-700 text-sm text-center">
+                  {error}
+                </div>
+              )}
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center rounded-full bg-[#0000CD] px-8 py-5 text-lg font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-[#0000B8] hover:shadow-xl active:scale-95"
+                  disabled={loading}
+                  className="w-full inline-flex items-center justify-center rounded-full bg-[#0000CD] px-8 py-5 text-lg font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-[#0000B8] hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  Bevestig inschrijving
+                  {loading ? 'Bezig met opslaan...' : 'Bevestig inschrijving'}
                 </button>
               </div>
 
