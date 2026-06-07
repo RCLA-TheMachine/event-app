@@ -1,8 +1,6 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface InschrijvingData {
   voornaam: string;
   achternaam: string;
@@ -156,8 +154,11 @@ export async function POST(request: Request) {
 </body>
 </html>`;
 
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const { error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'In de schaduw van de ooievaar <noreply@indeschaduwvandeooievaar.be>',
+      replyTo: 'info@indeschaduwvandeooievaar.be',
       to: data.email,
       subject: `Bevestiging inschrijving — In de schaduw van de ooievaar`,
       html: htmlContent,
