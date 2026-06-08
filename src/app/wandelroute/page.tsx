@@ -247,7 +247,7 @@ function WandelRouteContent() {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[#FBF0E9]">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-[#FBF0E9]">
       <div className="relative flex-1">
         {/* Map */}
         <div ref={mapContainerRef} className="absolute inset-0" />
