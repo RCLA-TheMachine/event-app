@@ -234,7 +234,7 @@ export default function Home() {
         background image — the gradient overlay is always on top so text stays readable.
       */}
       <div
-        className="relative flex min-h-screen flex-col overflow-hidden"
+        className="relative flex min-h-[100dvh] flex-col overflow-hidden"
         style={{
           backgroundImage: [
             'linear-gradient(135deg, rgba(245,205,182,0.93) 0%, rgba(253,232,220,0.88) 50%, rgba(232,196,176,0.94) 100%)',
