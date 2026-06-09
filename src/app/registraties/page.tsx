@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
 
 type Inschrijving = {
   id: number;
@@ -34,15 +33,15 @@ export default function RegistratiesPage() {
   async function load() {
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase
-      .from('inschrijvingen')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      setError('Kon registraties niet laden: ' + error.message);
-    } else {
-      setRows(data ?? []);
+    try {
+      const res = await fetch('/api/registraties');
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error ?? res.statusText);
+      }
+      setRows(await res.json());
+    } catch (e) {
+      setError('Kon registraties niet laden: ' + (e instanceof Error ? e.message : 'onbekende fout'));
     }
     setLoading(false);
   }
