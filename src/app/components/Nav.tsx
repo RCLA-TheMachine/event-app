@@ -15,7 +15,7 @@ export default function Nav() {
         {/* Logo + title */}
         <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <Image
-            src="/logo_aaron_5.png"
+            src="/logo_aaron.png"
             alt="Logo aaron"
             width={50}
             height={50}
