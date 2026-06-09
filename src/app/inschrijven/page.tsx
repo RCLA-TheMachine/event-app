@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Nav from '../components/Nav';
 import { supabase } from '../../lib/supabase';
+
+const MAX_REGISTRATIONS = 500;
 
 const PRICE_PER_PERSON = 30;
 const PRICE_PER_HAT = 15;
@@ -60,6 +62,21 @@ export default function Inschrijven() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [registrationCount, setRegistrationCount] = useState<number | null>(null);
+  const [countLoading, setCountLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from('inschrijvingen')
+      .select('*', { count: 'exact', head: true })
+      .then(({ count }) => {
+        setRegistrationCount(count ?? 0);
+        setCountLoading(false);
+      });
+  }, []);
+
+  const isFull = registrationCount !== null && registrationCount >= MAX_REGISTRATIONS;
+  const spotsLeft = registrationCount !== null ? Math.max(0, MAX_REGISTRATIONS - registrationCount) : null;
 
   const walkPrice = formData.aantal * PRICE_PER_PERSON;
   const hatPrice = formData.petjes * PRICE_PER_HAT;
@@ -77,6 +94,16 @@ export default function Inschrijven() {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Re-check capacity before inserting (race condition guard)
+    const { count } = await supabase
+      .from('inschrijvingen')
+      .select('*', { count: 'exact', head: true });
+    if ((count ?? 0) >= MAX_REGISTRATIONS) {
+      setRegistrationCount(count ?? MAX_REGISTRATIONS);
+      setLoading(false);
+      return;
+    }
 
     const { error: insertError } = await supabase
       .from('inschrijvingen')
@@ -193,6 +220,43 @@ export default function Inschrijven() {
     );
   }
 
+  // ── Loading count ───────────────────────────────────────────────────
+  if (countLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#0000CD]/20 border-t-[#0000CD]" />
+      </div>
+    );
+  }
+
+  // ── Vol ─────────────────────────────────────────────────────────────
+  if (isFull) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0] px-4 py-12">
+        <div className="w-full max-w-md text-center">
+          <div className="relative mx-auto mb-8 flex h-24 w-24 items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-[#0000CD]/10" />
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#0000CD] shadow-lg shadow-[#0000CD]/30">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+              </svg>
+            </div>
+          </div>
+          <h1 className="mb-3 text-3xl font-bold italic text-[#0000CD] md:text-4xl">Volzet</h1>
+          <p className="mb-8 leading-relaxed text-[#0000CD]/65">
+            De inschrijvingen zijn gesloten. Het maximum aantal deelnemers ({MAX_REGISTRATIONS}) is bereikt.
+          </p>
+          <Link href="/">
+            <button className="inline-flex cursor-pointer items-center justify-center rounded-full bg-[#0000CD] px-7 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B0] hover:scale-[1.02] active:scale-95">
+              Terug naar home
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   // ── Form ────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
@@ -221,6 +285,12 @@ export default function Inschrijven() {
               </div>
             </div>
             <div className="flex gap-4 text-sm">
+              {spotsLeft !== null && (
+                <div className="text-right">
+                  <p className="font-semibold text-[#0000CD]">{spotsLeft} plaatsen</p>
+                  <p className="text-xs text-[#0000CD]/55">nog beschikbaar</p>
+                </div>
+              )}
               <div className="text-right">
                 <p className="font-semibold text-[#0000CD]">€{PRICE_PER_PERSON} / persoon</p>
                 <p className="text-xs text-[#0000CD]/55">lunch inbegrepen</p>
