@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Nav from './components/Nav';
 
@@ -224,6 +224,14 @@ function TimelineEntry({
 
 export default function Home() {
   const [storkActive, setStorkActive] = useState(false);
+  const storkEndCount = useRef(0);
+  const handleStorkEnd = useCallback(() => {
+    storkEndCount.current += 1;
+    if (storkEndCount.current >= 3) {
+      storkEndCount.current = 0;
+      setStorkActive(false);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -302,20 +310,44 @@ export default function Home() {
           </a>
         </div>
 
-        {/* Stork — triggered by clicking the seconds tile */}
+        {/* 3 storks — triggered by clicking the seconds tile */}
         {storkActive && (
-          <div
-            className="pointer-events-none absolute top-[50%]"
-            style={{ animation: 'storkFlyAcross 8s cubic-bezier(0.37, 0, 0.63, 1) forwards' }}
-            onAnimationEnd={() => setStorkActive(false)}
-          >
+          <>
+            {/* Stork 1: left → right, lower zone */}
             <div
-              className="w-16 md:w-24"
-              style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}
+              className="pointer-events-none absolute top-[50%]"
+              style={{ animation: 'storkFlyAcross 8s cubic-bezier(0.37, 0, 0.63, 1) forwards' }}
+              onAnimationEnd={handleStorkEnd}
             >
-              <Stork />
+              <div className="w-16 md:w-24" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
+                <Stork />
+              </div>
             </div>
-          </div>
+
+            {/* Stork 2: left → right, upper zone, delayed */}
+            <div
+              className="pointer-events-none absolute top-[50%]"
+              style={{ animation: 'storkFlyAcross2 7s cubic-bezier(0.37, 0, 0.63, 1) 2s both' }}
+              onAnimationEnd={handleStorkEnd}
+            >
+              <div className="w-14 md:w-20" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
+                <Stork />
+              </div>
+            </div>
+
+            {/* Stork 3: right → left, mid zone, slightly delayed, flipped */}
+            <div
+              className="pointer-events-none absolute top-[50%]"
+              style={{ animation: 'storkFlyAcrossRTL 7.5s cubic-bezier(0.37, 0, 0.63, 1) 0.8s both' }}
+              onAnimationEnd={handleStorkEnd}
+            >
+              <div className="w-16 md:w-22" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
+                <div style={{ transform: 'scaleX(-1)' }}>
+                  <Stork />
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
         {/* Two-layer SVG wave → white */}

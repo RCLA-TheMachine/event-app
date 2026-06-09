@@ -32,6 +32,28 @@ html {
   100% { transform: translate(115vw, 22vh); opacity: 1; }
 }
 
+@keyframes storkFlyAcross2 {
+  0%   { transform: translate(-15vw, -20vh); opacity: 0; }
+  7%   { opacity: 1; }
+  20%  { transform: translate(20vw,  -10vh); }
+  38%  { transform: translate(40vw,  -18vh); }
+  55%  { transform: translate(57vw,  -8vh);  }
+  72%  { transform: translate(74vw,  -16vh); }
+  88%  { transform: translate(90vw,  -6vh);  }
+  100% { transform: translate(118vw, -12vh); opacity: 1; }
+}
+
+@keyframes storkFlyAcrossRTL {
+  0%   { transform: translate(118vw, 8vh);  opacity: 0; }
+  7%   { opacity: 1; }
+  20%  { transform: translate(85vw,  -2vh); }
+  38%  { transform: translate(63vw,  10vh); }
+  55%  { transform: translate(43vw,  1vh);  }
+  72%  { transform: translate(23vw,  9vh);  }
+  88%  { transform: translate(5vw,   0vh);  }
+  100% { transform: translate(-18vw, 6vh);  opacity: 1; }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
