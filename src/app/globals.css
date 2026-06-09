@@ -16,8 +16,8 @@ html {
 
 @keyframes storkBob {
   0%   { transform: translateY(0px); }
-  35%  { transform: translateY(3px);  }
-  70%  { transform: translateY(-5px); }
+  35%  { transform: translateY(1.5px); }
+  70%  { transform: translateY(-2.5px); }
   100% { transform: translateY(0px); }
 }
 

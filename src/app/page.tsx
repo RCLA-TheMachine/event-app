@@ -316,7 +316,7 @@ export default function Home() {
             {/* Stork 1: left → right, lower zone */}
             <div
               className="pointer-events-none absolute top-[50%]"
-              style={{ animation: 'storkFlyAcross 8s cubic-bezier(0.37, 0, 0.63, 1) forwards' }}
+              style={{ animation: 'storkFlyAcross 5s cubic-bezier(0.37, 0, 0.63, 1) forwards' }}
               onAnimationEnd={handleStorkEnd}
             >
               <div className="w-16 md:w-24" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
@@ -327,7 +327,7 @@ export default function Home() {
             {/* Stork 2: left → right, upper zone, delayed */}
             <div
               className="pointer-events-none absolute top-[50%]"
-              style={{ animation: 'storkFlyAcross2 7s cubic-bezier(0.37, 0, 0.63, 1) 2s both' }}
+              style={{ animation: 'storkFlyAcross2 4.5s cubic-bezier(0.37, 0, 0.63, 1) 1.3s both' }}
               onAnimationEnd={handleStorkEnd}
             >
               <div className="w-14 md:w-20" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
@@ -338,7 +338,7 @@ export default function Home() {
             {/* Stork 3: right → left, mid zone, slightly delayed, flipped */}
             <div
               className="pointer-events-none absolute top-[50%]"
-              style={{ animation: 'storkFlyAcrossRTL 7.5s cubic-bezier(0.37, 0, 0.63, 1) 0.8s both' }}
+              style={{ animation: 'storkFlyAcrossRTL 4.8s cubic-bezier(0.37, 0, 0.63, 1) 0.5s both' }}
               onAnimationEnd={handleStorkEnd}
             >
               <div className="w-16 md:w-22" style={{ animation: 'storkBob 1.1s ease-in-out infinite' }}>
