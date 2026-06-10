@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Nav from '../components/Nav';
 
 type Inschrijving = {
   id: number;
@@ -54,8 +55,9 @@ export default function RegistratiesPage() {
   const totalOmzet = rows.reduce((s, r) => s + r.totaalprijs, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0] px-4 py-10">
-      <div className="mx-auto max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
+      <Nav />
+      <div className="mx-auto max-w-7xl px-4 pb-10">
 
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
