@@ -10,7 +10,7 @@ const MAX_PERSONS = 500;
 const PRICE_PER_PERSON = 30;
 const PRICE_PER_HAT = 15;
 
-function Stepper({ value, min = 0, onChange }: { value: number; min?: number; onChange: (v: number) => void }) {
+function Stepper({ value, min = 0, max, onChange }: { value: number; min?: number; max?: number; onChange: (v: number) => void }) {
   return (
     <div className="flex items-center gap-2">
       <button
@@ -25,7 +25,8 @@ function Stepper({ value, min = 0, onChange }: { value: number; min?: number; on
       <button
         type="button"
         onClick={() => onChange(value + 1)}
-        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#0000CD]/20 text-lg font-medium text-[#0000CD] transition-colors hover:bg-[#0000CD]/8"
+        disabled={max !== undefined && value >= max}
+        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#0000CD]/20 text-lg font-medium text-[#0000CD] transition-colors hover:bg-[#0000CD]/8 disabled:cursor-not-allowed disabled:opacity-30"
       >
         +
       </button>
@@ -83,6 +84,13 @@ export default function Inschrijven() {
   const walkPrice = formData.aantal * PRICE_PER_PERSON;
   const hatPrice = formData.petjes * PRICE_PER_HAT;
   const totalPrice = walkPrice + hatPrice;
+
+  // Clamp avondeten when aantal decreases
+  useEffect(() => {
+    if (formData.avondeten > formData.aantal) {
+      setFormData(f => ({ ...f, avondeten: f.aantal }));
+    }
+  }, [formData.aantal]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -354,9 +362,9 @@ export default function Inschrijven() {
               </div>
 
               {/* Section 2 — Deelname */}
-              <div className="mb-8 border-t border-[#0000CD]/8 pt-7">
+              <div className="border-t border-[#0000CD]/8 pt-7">
                 <SectionHeader number={2} title="Deelname" />
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
                   <div>
                     <p className="mb-3 text-xs font-semibold text-[#0000CD]/70">Aantal personen</p>
                     <Stepper
@@ -373,22 +381,20 @@ export default function Inschrijven() {
                       min={0}
                       onChange={v => setFormData(f => ({ ...f, petjes: v }))}
                     />
-                    <p className="mt-2 text-xs text-[#0000CD]/45">€{PRICE_PER_HAT} per petje</p>
+                    <p className="mt-2 text-xs text-[#0000CD]/45">€{PRICE_PER_HAT} per petje · optioneel</p>
                   </div>
-                </div>
-              </div>
-
-              {/* Section 3 — Extra's */}
-              <div className="border-t border-[#0000CD]/8 pt-7">
-                <SectionHeader number={3} title="Extra's" />
-                <div>
-                  <p className="mb-3 text-xs font-semibold text-[#0000CD]/70">Mee-eten tijdens het avondmaal</p>
-                  <Stepper
-                    value={formData.avondeten}
-                    min={0}
-                    onChange={v => setFormData(f => ({ ...f, avondeten: v }))}
-                  />
-                  <p className="mt-2 text-xs text-[#0000CD]/45">Enkel een indicatie voor de organisatie — niet inbegrepen in de prijs.</p>
+                  <div>
+                    <p className="mb-3 text-xs font-semibold text-[#0000CD]/70">Avondmaal</p>
+                    <Stepper
+                      value={formData.avondeten}
+                      min={0}
+                      max={formData.aantal}
+                      onChange={v => setFormData(f => ({ ...f, avondeten: v }))}
+                    />
+                    <p className="mt-2 text-xs text-[#0000CD]/45">
+                      Na de wandeling voorzien we foodtrucks. Hoeveel personen uit jouw groep eten mee? Niet inbegrepen in de prijs — enkel ter informatie voor de organisatie.
+                    </p>
+                  </div>
                 </div>
               </div>
             </form>
