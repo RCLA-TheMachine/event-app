@@ -392,7 +392,7 @@ export default function Inschrijven() {
                       onChange={v => setFormData(f => ({ ...f, avondeten: v }))}
                     />
                     <p className="mt-2 text-xs text-[#0000CD]/45">
-                      Na de wandeling voorzien we foodtrucks. Hoeveel personen uit jouw groep eten mee? Niet inbegrepen in de prijs — enkel ter informatie voor de organisatie.
+                      's Avonds voorzien we foodtrucks. Niet inbegrepen in de prijs, enkel een indicatie voor de organisatie.
                     </p>
                   </div>
                 </div>
