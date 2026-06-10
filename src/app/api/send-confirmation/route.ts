@@ -45,8 +45,11 @@ export async function POST(request: Request) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&display=swap');
+  </style>
 </head>
-<body style="margin:0;padding:0;background-color:#FDE8DC;font-family:Georgia,serif;">
+<body style="margin:0;padding:0;background-color:#FDE8DC;font-family:'Geist',Arial,sans-serif;">
   <div style="max-width:600px;margin:0 auto;padding:32px 16px;">
 
     <!-- Header -->
@@ -54,7 +57,7 @@ export async function POST(request: Request) {
       <h1 style="color:white;margin:0;font-size:26px;font-style:italic;font-weight:bold;letter-spacing:-0.3px;">
         In de schaduw van de ooievaar
       </h1>
-      <p style="color:rgba(255,255,255,0.65);margin:8px 0 0;font-size:13px;font-family:Arial,sans-serif;letter-spacing:0.05em;">
+      <p style="color:rgba(255,255,255,0.65);margin:8px 0 0;font-size:13px;font-family:'Geist',Arial,sans-serif;letter-spacing:0.05em;">
         WANDELING 2026
       </p>
     </div>
@@ -63,15 +66,15 @@ export async function POST(request: Request) {
     <div style="background-color:#f0f0ff;border-left:4px solid #0000CD;border-right:1px solid rgba(0,0,205,0.12);padding:18px 24px;display:flex;align-items:center;">
       <table style="width:100%;border-collapse:collapse;">
         <tr>
-          <td style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.5;text-transform:uppercase;padding-bottom:4px;">
+          <td style="font-family:'Geist',Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.5;text-transform:uppercase;padding-bottom:4px;">
             Bewaar de datum
           </td>
         </tr>
         <tr>
-          <td style="font-family:Georgia,serif;font-size:18px;font-weight:bold;color:#0000CD;">
+          <td style="font-family:'Geist',Arial,sans-serif;font-size:18px;font-weight:bold;color:#0000CD;">
             29 augustus 2026
           </td>
-          <td style="font-family:Arial,sans-serif;font-size:13px;color:#0000CD;opacity:0.6;text-align:right;vertical-align:middle;">
+          <td style="font-family:'Geist',Arial,sans-serif;font-size:13px;color:#0000CD;opacity:0.6;text-align:right;vertical-align:middle;">
             Citadel van Diest
           </td>
         </tr>
@@ -84,16 +87,16 @@ export async function POST(request: Request) {
       <h2 style="color:#0000CD;margin:0 0 8px;font-size:20px;font-style:italic;">
         Bedankt, ${data.voornaam}!
       </h2>
-      <p style="color:#666;margin:0 0 28px;font-size:14px;line-height:1.6;font-family:Arial,sans-serif;">
+      <p style="color:#666;margin:0 0 28px;font-size:14px;line-height:1.6;font-family:'Geist',Arial,sans-serif;">
         Je inschrijving is goed ontvangen. Hieronder vind je een overzicht en de betalingsinformatie.
       </p>
 
       <!-- Inschrijvingsoverzicht -->
       <div style="background-color:#fafafa;border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid #f0f0f0;">
-        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
+        <p style="font-family:'Geist',Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
           Jouw inschrijving
         </p>
-        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:Arial,sans-serif;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'Geist',Arial,sans-serif;">
           <tr>
             <td style="padding:4px 0;color:#888;width:160px;">Naam</td>
             <td style="padding:4px 0;color:#222;font-weight:600;">${data.voornaam} ${data.achternaam}</td>
@@ -109,10 +112,10 @@ export async function POST(request: Request) {
 
       <!-- Prijsoverzicht -->
       <div style="background-color:#f0f0ff;border-radius:12px;padding:20px 24px;margin-bottom:20px;border:1px solid rgba(0,0,205,0.1);">
-        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
+        <p style="font-family:'Geist',Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
           Prijsoverzicht
         </p>
-        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:Arial,sans-serif;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'Geist',Arial,sans-serif;">
           <tr>
             <td style="padding:6px 0;color:#444;">${data.aantal} ${data.aantal === 1 ? 'persoon' : 'personen'} &times; &euro;30</td>
             <td style="padding:6px 0;text-align:right;color:#444;">&euro;${data.walkPrice}</td>
@@ -134,13 +137,13 @@ export async function POST(request: Request) {
 
       <!-- Betaalinformatie -->
       <div style="background-color:#fdf6f0;border-radius:12px;padding:20px 24px;margin-bottom:28px;border:1px solid rgba(0,0,205,0.1);">
-        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
+        <p style="font-family:'Geist',Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.12em;color:#0000CD;opacity:0.45;text-transform:uppercase;margin:0 0 12px;">
           Betaling
         </p>
-        <p style="color:#555;margin:0 0 14px;font-size:14px;line-height:1.6;font-family:Arial,sans-serif;">
+        <p style="color:#555;margin:0 0 14px;font-size:14px;line-height:1.6;font-family:'Geist',Arial,sans-serif;">
           Gelieve het totaalbedrag over te schrijven met je naam als mededeling.
         </p>
-        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:Arial,sans-serif;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;font-family:'Geist',Arial,sans-serif;">
           <tr>
             <td style="padding:4px 0;color:#888;width:160px;">Rekeningnummer</td>
             <td style="padding:4px 0;color:#222;font-weight:bold;font-family:monospace;font-size:15px;letter-spacing:0.04em;">BE11 1111 1111 1111</td>
@@ -156,18 +159,18 @@ export async function POST(request: Request) {
         </table>
       </div>
 
-      <p style="color:#999;font-size:13px;line-height:1.6;margin:0;font-family:Arial,sans-serif;">
-        Heb je vragen? Antwoord gerust op deze e-mail. We kijken ernaar uit je te verwelkomen op 29 augustus!
+      <p style="color:#999;font-size:13px;line-height:1.6;margin:0;font-family:'Geist',Arial,sans-serif;">
+        Heb je vragen? Stuur een e-mail naar <a href="mailto:rc.rubenclaeys@gmail.com" style="color:#0000CD;text-decoration:none;">rc.rubenclaeys@gmail.com</a>. We kijken ernaar uit je te verwelkomen op 29 augustus!
       </p>
     </div>
 
     <!-- Footer -->
     <div style="background-color:#0000CD;border-radius:0 0 16px 16px;padding:20px 32px;text-align:center;">
-      <p style="color:rgba(255,255,255,0.6);margin:0 0 4px;font-size:12px;font-style:italic;font-family:Georgia,serif;">
+      <p style="color:rgba(255,255,255,0.6);margin:0 0 4px;font-size:12px;font-style:italic;font-family:'Geist',Arial,sans-serif;">
         In de schaduw van de ooievaar &bull; Wandeling 2026
       </p>
       <p style="margin:0;">
-        <a href="https://indeschaduwvandeooievaar.be" style="color:rgba(255,255,255,0.4);font-size:11px;font-family:Arial,sans-serif;text-decoration:none;letter-spacing:0.04em;">
+        <a href="https://indeschaduwvandeooievaar.be" style="color:rgba(255,255,255,0.4);font-size:11px;font-family:'Geist',Arial,sans-serif;text-decoration:none;letter-spacing:0.04em;">
           indeschaduwvandeooievaar.be
         </a>
       </p>
