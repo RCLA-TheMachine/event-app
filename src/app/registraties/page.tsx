@@ -13,7 +13,6 @@ type Inschrijving = {
   aantal: number;
   petjes: number;
   avondeten: number;
-  opmerkingen: string | null;
   totaalprijs: number;
 };
 
@@ -57,12 +56,11 @@ export default function RegistratiesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0]">
       <Nav />
-      <div className="mx-auto max-w-7xl px-4 pb-10">
+      <div className="mx-auto max-w-6xl px-4 pb-10">
 
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0000CD]/40">Beheer</p>
             <h1 className="text-3xl font-bold italic text-[#0000CD]">Registraties</h1>
           </div>
           <button
@@ -116,7 +114,6 @@ export default function RegistratiesPage() {
                     <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-[#0000CD]/50">Petjes</th>
                     <th className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-[#0000CD]/50">Avondeten</th>
                     <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-[0.14em] text-[#0000CD]/50">Totaal</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#0000CD]/50">Opmerkingen</th>
                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#0000CD]/50">Datum</th>
                   </tr>
                 </thead>
@@ -134,12 +131,6 @@ export default function RegistratiesPage() {
                         {r.avondeten > 0 ? r.avondeten : <span className="text-[#0000CD]/25">—</span>}
                       </td>
                       <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#0000CD]">€{r.totaalprijs}</td>
-                      <td className="max-w-[180px] px-4 py-3 text-[#0000CD]/55">
-                        {r.opmerkingen
-                          ? <span title={r.opmerkingen} className="block truncate">{r.opmerkingen}</span>
-                          : <span className="text-[#0000CD]/25">—</span>
-                        }
-                      </td>
                       <td className="whitespace-nowrap px-4 py-3 text-xs text-[#0000CD]/45">
                         {new Date(r.created_at).toLocaleDateString('nl-BE', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                       </td>
