@@ -12,7 +12,7 @@ type Inschrijving = {
   telefoon: string;
   aantal: number;
   petjes: number;
-  avondeten: boolean;
+  avondeten: number;
   opmerkingen: string | null;
   totaalprijs: number;
 };
@@ -51,7 +51,7 @@ export default function RegistratiesPage() {
 
   const totalPersonen = rows.reduce((s, r) => s + r.aantal, 0);
   const totalPetjes = rows.reduce((s, r) => s + r.petjes, 0);
-  const totalAvondeten = rows.filter(r => r.avondeten).length;
+  const totalAvondeten = rows.reduce((s, r) => s + (r.avondeten ?? 0), 0);
   const totalOmzet = rows.reduce((s, r) => s + r.totaalprijs, 0);
 
   return (
@@ -130,11 +130,8 @@ export default function RegistratiesPage() {
                       <td className="px-4 py-3 text-[#0000CD]/70">{r.telefoon}</td>
                       <td className="px-4 py-3 text-center tabular-nums text-[#0000CD]">{r.aantal}</td>
                       <td className="px-4 py-3 text-center tabular-nums text-[#0000CD]">{r.petjes}</td>
-                      <td className="px-4 py-3 text-center">
-                        {r.avondeten
-                          ? <span className="inline-block rounded-full bg-[#0000CD]/10 px-2.5 py-0.5 text-xs font-semibold text-[#0000CD]">Ja</span>
-                          : <span className="text-[#0000CD]/25">—</span>
-                        }
+                      <td className="px-4 py-3 text-center tabular-nums text-[#0000CD]">
+                        {r.avondeten > 0 ? r.avondeten : <span className="text-[#0000CD]/25">—</span>}
                       </td>
                       <td className="px-4 py-3 text-right font-semibold tabular-nums text-[#0000CD]">€{r.totaalprijs}</td>
                       <td className="max-w-[180px] px-4 py-3 text-[#0000CD]/55">

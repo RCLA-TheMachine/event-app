@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Nav from '../components/Nav';
 import { supabase } from '../../lib/supabase';
 
-const MAX_REGISTRATIONS = 500;
+const MAX_PERSONS = 500;
 
 const PRICE_PER_PERSON = 30;
 const PRICE_PER_HAT = 15;
@@ -55,39 +55,37 @@ export default function Inschrijven() {
     telefoon: '',
     aantal: 1,
     petjes: 0,
-    opmerkingen: '',
-    avondeten: false,
+    avondeten: 0,
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [registrationCount, setRegistrationCount] = useState<number | null>(null);
+  const [totalPersonen, setTotalPersonen] = useState<number | null>(null);
   const [countLoading, setCountLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('inschrijvingen')
-      .select('*', { count: 'exact', head: true })
-      .then(({ count }) => {
-        setRegistrationCount(count ?? 0);
+    fetch('/api/registraties/count')
+      .then(r => r.json())
+      .then(({ totalPersonen }) => {
+        setTotalPersonen(totalPersonen ?? 0);
+        setCountLoading(false);
+      })
+      .catch(() => {
+        setTotalPersonen(0);
         setCountLoading(false);
       });
   }, []);
 
-  const isFull = registrationCount !== null && registrationCount >= MAX_REGISTRATIONS;
-  const spotsLeft = registrationCount !== null ? Math.max(0, MAX_REGISTRATIONS - registrationCount) : null;
+  const isFull = totalPersonen !== null && totalPersonen >= MAX_PERSONS;
+  const spotsLeft = totalPersonen !== null ? Math.max(0, MAX_PERSONS - totalPersonen) : null;
 
   const walkPrice = formData.aantal * PRICE_PER_PERSON;
   const hatPrice = formData.petjes * PRICE_PER_HAT;
   const totalPrice = walkPrice + hatPrice;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const target = e.target;
-    const value = target instanceof HTMLInputElement && target.type === 'checkbox'
-      ? target.checked
-      : target.value;
-    setFormData(f => ({ ...f, [target.name]: value }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(f => ({ ...f, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -96,11 +94,10 @@ export default function Inschrijven() {
     setError(null);
 
     // Re-check capacity before inserting (race condition guard)
-    const { count } = await supabase
-      .from('inschrijvingen')
-      .select('*', { count: 'exact', head: true });
-    if ((count ?? 0) >= MAX_REGISTRATIONS) {
-      setRegistrationCount(count ?? MAX_REGISTRATIONS);
+    const res = await fetch('/api/registraties/count');
+    const { totalPersonen: currentTotal } = await res.json();
+    if ((currentTotal ?? 0) >= MAX_PERSONS) {
+      setTotalPersonen(currentTotal ?? MAX_PERSONS);
       setLoading(false);
       return;
     }
@@ -114,7 +111,6 @@ export default function Inschrijven() {
         telefoon: formData.telefoon,
         aantal: formData.aantal,
         petjes: formData.petjes,
-        opmerkingen: formData.opmerkingen || null,
         avondeten: formData.avondeten,
         totaalprijs: totalPrice,
       });
@@ -138,7 +134,6 @@ export default function Inschrijven() {
           telefoon: formData.telefoon,
           aantal: formData.aantal,
           petjes: formData.petjes,
-          opmerkingen: formData.opmerkingen || null,
           avondeten: formData.avondeten,
           totaalprijs: totalPrice,
           walkPrice,
@@ -157,7 +152,6 @@ export default function Inschrijven() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#F5CDB6] via-[#FDE8DC] to-[#E8C4B0] px-4 py-12">
         <div className="w-full max-w-md text-center">
-          {/* Animated checkmark */}
           <div className="relative mx-auto mb-8 flex h-24 w-24 items-center justify-center">
             <div className="absolute inset-0 animate-ping rounded-full bg-[#0000CD]/15" style={{ animationDuration: '2s' }} />
             <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#0000CD] shadow-lg shadow-[#0000CD]/30">
@@ -172,7 +166,6 @@ export default function Inschrijven() {
             Je inschrijving is goed ontvangen. Je krijgt binnenkort een bevestiging per e-mail met meer informatie.
           </p>
 
-          {/* Registration summary */}
           <div className="mb-6 rounded-2xl border border-[#0000CD]/10 bg-white/80 p-6 text-left shadow-sm backdrop-blur-sm">
             <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#0000CD]/40">Jouw inschrijving</p>
             <div className="space-y-2">
@@ -190,10 +183,10 @@ export default function Inschrijven() {
                   <span className="font-medium text-[#0000CD]">{formData.petjes}</span>
                 </div>
               )}
-              {formData.avondeten && (
+              {formData.avondeten > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-[#0000CD]/60">Avondeten</span>
-                  <span className="font-medium text-[#0000CD]">Ja</span>
+                  <span className="font-medium text-[#0000CD]">{formData.avondeten} {formData.avondeten === 1 ? 'persoon' : 'personen'}</span>
                 </div>
               )}
               <div className="flex justify-between border-t border-[#0000CD]/10 pt-2 text-sm">
@@ -245,7 +238,7 @@ export default function Inschrijven() {
           </div>
           <h1 className="mb-3 text-3xl font-bold italic text-[#0000CD] md:text-4xl">Volzet</h1>
           <p className="mb-8 leading-relaxed text-[#0000CD]/65">
-            De inschrijvingen zijn gesloten. Het maximum aantal deelnemers ({MAX_REGISTRATIONS}) is bereikt.
+            De inschrijvingen zijn gesloten. Het maximum aantal deelnemers ({MAX_PERSONS}) is bereikt.
           </p>
           <Link href="/">
             <button className="inline-flex cursor-pointer items-center justify-center rounded-full bg-[#0000CD] px-7 py-3.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B0] hover:scale-[1.02] active:scale-95">
@@ -388,33 +381,14 @@ export default function Inschrijven() {
               {/* Section 3 — Extra's */}
               <div className="border-t border-[#0000CD]/8 pt-7">
                 <SectionHeader number={3} title="Extra's" />
-                <div className="space-y-5">
-                  <label className="flex cursor-pointer items-start gap-3">
-                    <input
-                      type="checkbox" name="avondeten"
-                      checked={formData.avondeten} onChange={handleChange}
-                      className="mt-0.5 h-4 w-4 cursor-pointer accent-[#0000CD]"
-                    />
-                    <div>
-                      <span className="text-sm font-semibold text-[#0000CD]">Mee-eten tijdens het avondmaal</span>
-                      <p className="mt-0.5 text-xs leading-relaxed text-[#0000CD]/50">
-                        Enkel een indicatie voor de organisatie — niet inbegrepen in de prijs.
-                      </p>
-                    </div>
-                  </label>
-
-                  <div>
-                    <label htmlFor="opmerkingen" className="mb-1.5 block text-xs font-semibold text-[#0000CD]/70">
-                      Opmerkingen
-                    </label>
-                    <textarea
-                      id="opmerkingen" name="opmerkingen"
-                      value={formData.opmerkingen} onChange={handleChange}
-                      rows={3}
-                      placeholder="Eventuele vragen of opmerkingen..."
-                      className={`${inputClass} resize-none`}
-                    />
-                  </div>
+                <div>
+                  <p className="mb-3 text-xs font-semibold text-[#0000CD]/70">Mee-eten tijdens het avondmaal</p>
+                  <Stepper
+                    value={formData.avondeten}
+                    min={0}
+                    onChange={v => setFormData(f => ({ ...f, avondeten: v }))}
+                  />
+                  <p className="mt-2 text-xs text-[#0000CD]/45">Enkel een indicatie voor de organisatie — niet inbegrepen in de prijs.</p>
                 </div>
               </div>
             </form>
