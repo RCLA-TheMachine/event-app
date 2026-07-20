@@ -41,11 +41,11 @@ export default function Nav() {
             Wandelroute
           </a>
 
-          <Link href="/inschrijven">
+          <a href="https://idsvdo.stager.co/shop/idsvdo" target="_blank" rel="noopener noreferrer">
             <button className="ml-2 inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] hover:shadow-lg active:scale-95 cursor-pointer">
               Schrijf je in
             </button>
-          </Link>
+          </a>
         </nav>
 
         {/* Hamburger button — mobile only */}
@@ -87,11 +87,11 @@ export default function Nav() {
           </a>
 
           <div className="mt-2 border-t border-[#0000CD]/8 px-5 pt-3 pb-1">
-            <Link href="/inschrijven" onClick={closeMobile}>
+            <a href="https://idsvdo.stager.co/shop/idsvdo" target="_blank" rel="noopener noreferrer" onClick={closeMobile}>
               <button className="w-full inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#0000B8] active:scale-95 cursor-pointer">
                 Schrijf je in
               </button>
-            </Link>
+            </a>
           </div>
         </nav>
       </div>

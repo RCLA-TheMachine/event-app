@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
 import Nav from './components/Nav';
 
 type ScheduleItem = {
@@ -292,11 +291,11 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col items-center gap-3 sm:flex-row">
-            <Link href="/inschrijven">
+            <a href="https://idsvdo.stager.co/shop/idsvdo" target="_blank" rel="noopener noreferrer">
               <button className="inline-flex cursor-pointer items-center justify-center rounded-full bg-[#0000CD] px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0000CD]/20 transition-all hover:scale-[1.03] hover:bg-[#0000B0] hover:shadow-xl active:scale-95 sm:px-8 sm:py-4">
                 Schrijf je in
               </button>
-            </Link>
+            </a>
           </div>
 
           {/* Scroll hint */}

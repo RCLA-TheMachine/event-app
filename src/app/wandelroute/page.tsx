@@ -15,6 +15,9 @@ type RoutePoint = {
   audio: string;
 };
 
+const EVENT_DATE = new Date('2026-08-29T00:00:00');
+const isEventDay = () => Date.now() >= EVENT_DATE.getTime();
+
 const ROUTE_POINTS: RoutePoint[] = [
   {
     id: 1, number: 1,
@@ -116,6 +119,17 @@ function WandelRouteContent() {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const playButtonRef = useRef<HTMLDivElement>(null);
+  const [playTooltipPos, setPlayTooltipPos] = useState<{ top: number; left: number } | null>(null);
+
+  const showPlayTooltip = useCallback(() => {
+    const rect = playButtonRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPlayTooltipPos({ top: rect.top, left: rect.left + rect.width / 2 });
+  }, []);
+
+  const hidePlayTooltip = useCallback(() => setPlayTooltipPos(null), []);
 
   // Init map
   useEffect(() => {
@@ -344,22 +358,30 @@ function WandelRouteContent() {
                 {/* Audio player */}
                 <div className="mt-4 flex items-center gap-3">
                   {/* Play / pause */}
-                  <button
-                    onClick={togglePlay}
-                    aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-                    className="flex h-11 w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#0000CD] text-white shadow-lg shadow-[#0000CD]/25 transition-all hover:bg-[#0000B0] hover:scale-[1.05] active:scale-95"
+                  <div
+                    ref={playButtonRef}
+                    className="flex-shrink-0"
+                    onMouseEnter={!isEventDay() ? showPlayTooltip : undefined}
+                    onMouseLeave={!isEventDay() ? hidePlayTooltip : undefined}
                   >
-                    {playing ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <rect x="6" y="4" width="4" height="16" rx="1.5" />
-                        <rect x="14" y="4" width="4" height="16" rx="1.5" />
-                      </svg>
-                    ) : (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-px" aria-hidden="true">
-                        <path d="M5 3.8v16.4a.8.8 0 0 0 1.2.7l13-8.2a.8.8 0 0 0 0-1.4l-13-8.2A.8.8 0 0 0 5 3.8z" />
-                      </svg>
-                    )}
-                  </button>
+                    <button
+                      onClick={togglePlay}
+                      disabled={!isEventDay()}
+                      aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+                      className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0000CD] text-white shadow-lg shadow-[#0000CD]/25 transition-all hover:bg-[#0000B0] hover:scale-[1.05] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#0000CD] disabled:hover:scale-100"
+                    >
+                      {playing ? (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <rect x="6" y="4" width="4" height="16" rx="1.5" />
+                          <rect x="14" y="4" width="4" height="16" rx="1.5" />
+                        </svg>
+                      ) : (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-px" aria-hidden="true">
+                          <path d="M5 3.8v16.4a.8.8 0 0 0 1.2.7l13-8.2a.8.8 0 0 0 0-1.4l-13-8.2A.8.8 0 0 0 5 3.8z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
 
                   {/* Progress */}
                   <div className="flex flex-1 items-center gap-2">
@@ -438,6 +460,17 @@ function WandelRouteContent() {
             </div>
           )}
         </div>
+
+        {/* Play button tooltip — rendered outside the panel so it's never clipped */}
+        {playTooltipPos && (
+          <div
+            className="pointer-events-none fixed z-[2000] w-48 -translate-x-1/2 -translate-y-[calc(100%+8px)] rounded-lg bg-[#0000CD] px-3 py-2 text-center text-xs font-medium text-white shadow-lg"
+            style={{ top: playTooltipPos.top, left: playTooltipPos.left }}
+          >
+            Deze functie wordt geactiveerd op de dag van de wandeling
+            <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-[#0000CD]" />
+          </div>
+        )}
       </div>
     </div>
   );
