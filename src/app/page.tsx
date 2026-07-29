@@ -30,28 +30,28 @@ const scheduleItems: ScheduleItem[] = [
     detail: 'Na de wandeling komen we terug samen op de Citadel. Tijd om even te rusten en bij te praten voor het middagprogramma begint.',
   },
   {
-    time: '14:00',
+    time: '13:30',
     title: 'Huis van de Mens — Sylvia Dugardijn',
     description: 'Lezing',
     detail: 'Sylvia Dugardijn (Huis van de Mens) verzorgt een inspirerende lezing.',
   },
   {
-    time: '16:00',
+    time: '15:00',
     title: 'Stoop Kid',
     description: 'Livemuziek',
     detail: 'De band Stoop Kid zorgt voor de muzikale noot in de namiddag.',
+  },
+  {
+    time: '17:00',
+    title: 'Gul House',
+    description: 'Livemuziek',
+    detail: 'De avond wordt ingezet met livemuziek van Gul House.',
   },
   {
     time: '18:00',
     title: 'Avondeten met food trucks',
     description: 'Genieten van lekkers bij de food trucks',
     detail: 'Verschillende food trucks zorgen voor een gevarieerd aanbod. Tijd om samen te tafelen en na te genieten van de dag.',
-  },
-  {
-    time: '19:00',
-    title: 'Gul House',
-    description: 'Livemuziek',
-    detail: 'De avond wordt ingezet met livemuziek van Gul House.',
   },
   {
     time: '22:00',

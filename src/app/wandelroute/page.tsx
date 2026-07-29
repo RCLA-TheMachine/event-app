@@ -18,40 +18,59 @@ type RoutePoint = {
 const EVENT_DATE = new Date('2026-08-29T00:00:00');
 const isEventDay = () => Date.now() >= EVENT_DATE.getTime();
 
+const GPX_PATH = '/gpx/wandelroute-idsvdo.gpx';
+
+async function loadGpxTrack(url: string): Promise<[number, number][]> {
+  const res = await fetch(url);
+  const text = await res.text();
+  const doc = new DOMParser().parseFromString(text, 'text/xml');
+  return Array.from(doc.getElementsByTagName('trkpt')).map((pt) => [
+    parseFloat(pt.getAttribute('lat')!),
+    parseFloat(pt.getAttribute('lon')!),
+  ]);
+}
+
 const ROUTE_POINTS: RoutePoint[] = [
   {
     id: 1, number: 1,
-    title: 'Startpunt — Grote Markt',
-    description: 'We beginnen onze wandeling op de historische Grote Markt van Diest, omgeven door eeuwenoude gevels en de imposante Sint-Sulpitiuskerk.',
-    lat: 50.9946, lng: 5.0543,
+    title: 'Start en einde',
+    description: 'Het vertrek- en aankomstpunt van de wandeling.',
+    lat: 50.983498, lng: 5.046046,
     audio: '/guitar.mp3',
   },
   {
     id: 2, number: 2,
-    title: 'Begijnhof van Diest',
-    description: 'Het grootse begijnhof van Diest, beschermd UNESCO-werelderfgoed. Een oase van rust met pittoreske straatjes en middeleeuwse sfeer.',
-    lat: 50.9924, lng: 5.0571,
+    title: 'Startpunt — Grote Markt',
+    description: 'We beginnen onze wandeling op de historische Grote Markt van Diest, omgeven door eeuwenoude gevels en de imposante Sint-Sulpitiuskerk.',
+    lat: 50.984953, lng: 5.042678,
     audio: '/guitar.mp3',
   },
   {
     id: 3, number: 3,
-    title: 'Halve Maan',
-    description: 'De indrukwekkende Halve Maan-verdediging, een buitengewoon bewaard stuk van de historische stadsverdediging van Diest.',
-    lat: 50.9908, lng: 5.0488,
+    title: 'Begijnhof van Diest',
+    description: 'Het grootse begijnhof van Diest, beschermd UNESCO-werelderfgoed. Een oase van rust met pittoreske straatjes en middeleeuwse sfeer.',
+    lat: 50.988138, lng: 5.055224,
     audio: '/guitar.mp3',
   },
   {
     id: 4, number: 4,
-    title: 'Historische Wallen',
-    description: 'Langs de pittoreske wallen wandelen we verder. Hier kon je eeuwen geleden de hele stad overzien.',
-    lat: 50.9920, lng: 5.0450,
+    title: 'Halve Maan',
+    description: 'De indrukwekkende Halve Maan-verdediging, een buitengewoon bewaard stuk van de historische stadsverdediging van Diest.',
+    lat: 50.989500, lng: 5.063393,
     audio: '/guitar.mp3',
   },
   {
     id: 5, number: 5,
+    title: 'Historische Wallen',
+    description: 'Langs de pittoreske wallen wandelen we verder. Hier kon je eeuwen geleden de hele stad overzien.',
+    lat: 50.988978, lng: 5.060366,
+    audio: '/guitar.mp3',
+  },
+  {
+    id: 6, number: 6,
     title: 'Citadel van Diest',
     description: 'Het eindpunt van onze wandeling: de imposante citadel met een weids uitzicht over Diest en de omliggende Demervallei.',
-    lat: 50.9882, lng: 5.0425,
+    lat: 50.984440, lng: 5.052240,
     audio: '/guitar.mp3',
   },
 ];
@@ -86,6 +105,36 @@ function makeMarkerIcon(L: any, number: number, selected: boolean) {
       cursor:pointer;
       transition:all 0.15s ease;
     ">${number}</div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
+
+function computeBearing(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const toRad = (v: number) => (v * Math.PI) / 180;
+  const toDeg = (v: number) => (v * 180) / Math.PI;
+  const dLng = toRad(lng2 - lng1);
+  const y = Math.sin(dLng) * Math.cos(toRad(lat2));
+  const x =
+    Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+    Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLng);
+  return (toDeg(Math.atan2(y, x)) + 360) % 360;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function makeArrowIcon(L: any, bearingDeg: number) {
+  const size = 20;
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:${size}px;height:${size}px;
+      display:flex;align-items:center;justify-content:center;
+      transform:rotate(${bearingDeg}deg);
+    ">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="#0000CD" style="filter:drop-shadow(0 1px 2px rgba(0,0,205,0.45));">
+        <path d="M12 2 L20 20 L12 15.5 L4 20 Z" />
+      </svg>
+    </div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
@@ -141,8 +190,8 @@ function WandelRouteContent() {
       if (!alive || !mapContainerRef.current) return;
 
       const map = L.map(mapContainerRef.current, {
-        center: [50.9916, 5.0498],
-        zoom: 14,
+        center: [50.9862, 5.0540],
+        zoom: 15,
         zoomControl: false,
       });
 
@@ -155,14 +204,38 @@ function WandelRouteContent() {
         maxZoom: 20,
       }).addTo(map);
 
-      // Dashed route line
-      const coords = ROUTE_POINTS.map((p) => [p.lat, p.lng] as [number, number]);
-      L.polyline(coords, {
-        color: '#0000CD',
-        weight: 3,
-        opacity: 0.4,
-        dashArray: '6 10',
-      }).addTo(map);
+      // Actual walked route, from the GPX track
+      loadGpxTrack(GPX_PATH).then((coords) => {
+        if (!alive || coords.length === 0) return;
+        const routeLine = L.polyline(coords, {
+          color: '#0000CD',
+          weight: 4,
+          opacity: 0.55,
+        }).addTo(map);
+
+        // Frame the whole route, unless the user deep-linked to a specific point
+        if (!selected) {
+          map.fitBounds(routeLine.getBounds(), { padding: [32, 32] });
+        }
+
+        // Direction arrows, evenly spaced along the track
+        const ARROW_COUNT = 8;
+        const LOOKAHEAD = 5;
+        for (let i = 1; i <= ARROW_COUNT; i++) {
+          const idx = Math.round((i / (ARROW_COUNT + 1)) * (coords.length - 1));
+          const aheadIdx = Math.min(idx + LOOKAHEAD, coords.length - 1);
+          if (aheadIdx === idx) continue;
+          const bearing = computeBearing(
+            coords[idx][0], coords[idx][1],
+            coords[aheadIdx][0], coords[aheadIdx][1]
+          );
+          L.marker(coords[idx], {
+            icon: makeArrowIcon(L, bearing),
+            interactive: false,
+            keyboard: false,
+          }).addTo(map);
+        }
+      });
 
       // Markers
       ROUTE_POINTS.forEach((point) => {
@@ -266,8 +339,8 @@ function WandelRouteContent() {
         {/* Map */}
         <div ref={mapContainerRef} className="absolute inset-0" />
 
-        {/* Mobile home button */}
-        <div className="absolute left-3 top-3 z-[1000] md:hidden">
+        {/* Mobile home + GPX buttons */}
+        <div className="absolute left-3 top-3 z-[1000] flex gap-2 md:hidden">
           <Link
             href="/"
             aria-label="Naar startpagina"
@@ -276,6 +349,16 @@ function WandelRouteContent() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z" />
               <path d="M9 21V12h6v9" />
+            </svg>
+          </Link>
+          <Link
+            href="/wandelroute/gpx"
+            aria-label="GPX-bestand downloaden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#0000CD]/15 bg-white/90 text-[#0000CD]/60 shadow-md backdrop-blur-sm transition-colors hover:bg-white hover:text-[#0000CD]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 3v13m0 0l-4.5-4.5M12 16l4.5-4.5" />
+              <path d="M4 19h16" />
             </svg>
           </Link>
         </div>
@@ -304,7 +387,19 @@ function WandelRouteContent() {
                 </button>
               ))}
             </div>
-            <div className="mt-3 border-t border-[#0000CD]/10 pt-2.5">
+            <div className="mt-3 space-y-0.5 border-t border-[#0000CD]/10 pt-2.5">
+              <Link
+                href="/wandelroute/gpx"
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left text-sm font-medium text-[#0000CD]/55 transition-colors hover:bg-[#0000CD]/5 hover:text-[#0000CD]"
+              >
+                <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3v13m0 0l-4.5-4.5M12 16l4.5-4.5" />
+                    <path d="M4 19h16" />
+                  </svg>
+                </span>
+                Download GPX
+              </Link>
               <Link
                 href="/"
                 className="flex w-full items-center gap-2 rounded-lg px-2 py-1 text-left text-sm font-medium text-[#0000CD]/55 transition-colors hover:bg-[#0000CD]/5 hover:text-[#0000CD]"
