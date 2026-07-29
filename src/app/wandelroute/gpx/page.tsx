@@ -11,6 +11,10 @@ const APPS = [
     name: 'Strava',
     steps: 'Open Strava → Training → Routes → Route maken → importeer GPX-bestand.',
   },
+  {
+    name: 'Garmin Connect',
+    steps: 'Open Garmin Connect → Training → Cursussen → Importeren → kies het GPX-bestand. Synchroniseer nadien je horloge/toestel om de cursus te downloaden.',
+  },
 ];
 
 export default function GpxDownloadPage() {
