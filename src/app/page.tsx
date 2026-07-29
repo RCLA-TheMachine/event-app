@@ -13,45 +13,51 @@ type ScheduleItem = {
 const scheduleItems: ScheduleItem[] = [
   {
     time: '09:00',
-    title: 'Ontvangst met koffie',
+    title: 'Ontvangst en welkomstwoord',
     description: 'Welkom bij de Citadel van Diest',
-    detail: 'We heten iedereen hartelijk welkom aan de Citadel. Er is koffie, thee en een lichte snack voorzien. Een ideaal moment om elkaar te leren kennen voor we vertrekken.',
+    detail: 'We heten iedereen hartelijk welkom aan de Citadel. Er is koffie en thee voorzien, gevolgd door een kort welkomstwoord voor we vertrekken.',
   },
   {
-    time: '09:30',
+    time: '09:30 –\n10:00',
     title: 'Start wandeling',
-    description: 'Vertrek voor een inspirerende wandeling',
-    detail: 'We starten de wandeling vanuit de Citadel. De route leidt ons door het pittoreske landschap rondom Diest, langs historische wallen en groene valleien.',
+    description: 'Vertrek van de wandeling',
+    detail: 'We starten de wandeling vanuit de Citadel. De route leidt ons door het pittoreske landschap rondom Diest, langs historische wallen, groene valleien en het begijnhof.',
   },
   {
     time: '12:00',
     title: 'Aankomst citadel',
-    description: 'Gezamenlijke lunch onderweg',
-    detail: 'Na de ochtendwandeling komen we samen voor een gezellige lunch. Er is een gevarieerd aanbod voorzien voor iedereen.',
+    description: 'Terug op de Citadel',
+    detail: 'Na de wandeling komen we terug samen op de Citadel. Tijd om even te rusten en bij te praten voor het middagprogramma begint.',
   },
   {
     time: '14:00',
-    title: 'Spreker 1',
-    description: 'Inspirerende lezing',
-    detail: 'Meer informatie over deze spreker volgt binnenkort.',
+    title: 'Huis van de Mens — Sylvia Dugardijn',
+    description: 'Lezing',
+    detail: 'Sylvia Dugardijn (Huis van de Mens) verzorgt een inspirerende lezing.',
   },
   {
-    time: '15:30',
-    title: 'Muziek',
-    description: 'Even op adem komen',
-    detail: 'Muzikale noot als intermezzo. Laat de klanken op je inwerken terwijl je geniet van de omgeving.',
-  },
-  {
-    time: '17:00',
-    title: 'Spreker 2',
-    description: 'Inspirerende lezing',
-    detail: 'Meer informatie over deze spreker volgt binnenkort.',
+    time: '16:00',
+    title: 'Stoop Kid',
+    description: 'Livemuziek',
+    detail: 'De band Stoop Kid zorgt voor de muzikale noot in de namiddag.',
   },
   {
     time: '18:00',
-    title: 'Muziek & afsluiting',
-    description: 'Afsluiting van de dag',
-    detail: 'We sluiten de dag af met muziek en een informeel samenzijn. Een mooi moment om de dag te laten bezinken.',
+    title: 'Avondeten met food trucks',
+    description: 'Genieten van lekkers bij de food trucks',
+    detail: 'Verschillende food trucks zorgen voor een gevarieerd aanbod. Tijd om samen te tafelen en na te genieten van de dag.',
+  },
+  {
+    time: '19:00',
+    title: 'Gul House',
+    description: 'Livemuziek',
+    detail: 'De avond wordt ingezet met livemuziek van Gul House.',
+  },
+  {
+    time: '22:00',
+    title: 'Einde',
+    description: 'Einde van de dag',
+    detail: 'Hiermee komt een einde aan een dag vol wandelen, muziek en gezelligheid. Tot de volgende keer!',
   },
 ];
 
@@ -164,7 +170,7 @@ function TimelineEntry({
       )}
 
       <div className="w-16 md:w-20 flex-shrink-0 pt-1 text-right">
-        <span className="text-sm font-bold tabular-nums text-[#0000CD]">{item.time}</span>
+        <span className="whitespace-pre-line text-sm font-bold leading-tight tabular-nums text-[#0000CD]">{item.time}</span>
       </div>
 
       <div className="relative flex-shrink-0 flex flex-col items-center">
