@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
 import Nav from './components/Nav';
+import InstagramIcon from './components/InstagramIcon';
 
 type ScheduleItem = {
   time: string;
@@ -43,15 +45,15 @@ const scheduleItems: ScheduleItem[] = [
   },
   {
     time: '17:00',
-    title: 'Gul House',
+    title: 'Gull House',
     description: 'Livemuziek',
-    detail: 'De avond wordt ingezet met livemuziek van Gul House.',
+    detail: 'De avond wordt ingezet met livemuziek van Gull House.',
   },
   {
     time: '18:00',
-    title: 'Avondeten met food trucks',
+    title: 'Avondeten met food trucks en muziek',
     description: 'Genieten van lekkers bij de food trucks',
-    detail: 'Verschillende food trucks zorgen voor een gevarieerd aanbod. Tijd om samen te tafelen en na te genieten van de dag.',
+    detail: 'Verschillende food trucks zorgen voor een gevarieerd aanbod, met muziek op de achtergrond. Tijd om samen te tafelen en na te genieten van de dag.',
   },
   {
     time: '22:00',
@@ -288,8 +290,15 @@ export default function Home() {
           </h1>
 
           <p className="mx-auto mb-8 max-w-xl text-base leading-relaxed text-[#0000CD]/70 sm:text-lg md:text-xl">
-            Sluit je aan bij onze wandeling door het prachtige landschap rondom Diest.
-            Een dag vol natuur, gezelligheid en inspirerende momenten.
+            Een wandeling van ongeveer 8 km doorheen Diest, met onderweg QR-codes die je
+            meenemen naar geluidsfragmenten, muziek en gedichten. Bij aankomst staan er
+            broodjes klaar (te bestellen bij je online inschrijving), gevolgd door een
+            spreker, livemuziek en food trucks in de namiddag. De opbrengst gaat integraal
+            naar{' '}
+            <Link href="/goed-doel" className="font-semibold underline decoration-[#0000CD]/30 underline-offset-2 hover:decoration-[#0000CD]/60">
+              Movember
+            </Link>
+            .
           </p>
 
           <div className="mb-6 sm:mb-10">
@@ -298,7 +307,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <a href="https://idsvdo.stager.co/shop/idsvdo" target="_blank" rel="noopener noreferrer">
-              <button className="inline-flex cursor-pointer items-center justify-center rounded-full bg-[#0000CD] px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#0000CD]/20 transition-all hover:scale-[1.03] hover:bg-[#0000B0] hover:shadow-xl active:scale-95 sm:px-8 sm:py-4">
+              <button className="subpixel-antialiased inline-flex cursor-pointer items-center justify-center rounded-full bg-[#0000CD] px-7 py-3.5 text-base font-bold text-white shadow-lg shadow-[#0000CD]/20 transition-all hover:scale-[1.03] hover:bg-[#0000B0] hover:shadow-xl active:scale-95 sm:px-8 sm:py-4">
                 Schrijf je in
               </button>
             </a>
@@ -398,6 +407,17 @@ export default function Home() {
 
       {/* ── Footer ── */}
       <footer className="bg-white px-4 py-8 text-center">
+        <div className="mb-4 flex items-center justify-center gap-4">
+          <a
+            href="https://www.instagram.com/indeschaduwvandeooievaar/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="In de schaduw van de ooievaar op Instagram"
+            className="text-[#0000CD]/40 transition-colors hover:text-[#0000CD]/70"
+          >
+            <InstagramIcon className="h-5 w-5" />
+          </a>
+        </div>
         <p className="italic text-[#0000CD]/40">
           In de schaduw van de ooievaar • Wandeling 2026
         </p>
