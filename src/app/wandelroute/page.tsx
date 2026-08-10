@@ -33,44 +33,65 @@ async function loadGpxTrack(url: string): Promise<[number, number][]> {
 const ROUTE_POINTS: RoutePoint[] = [
   {
     id: 1, number: 1,
-    title: 'Start en einde',
-    description: 'Het vertrek- en aankomstpunt van de wandeling.',
-    lat: 50.983498, lng: 5.046046,
+    title: 'Citadel — start en eindpunt',
+    description: 'Het vertrek- en aankomstpunt van de wandeling: de imposante Citadel van Diest.',
+    lat: 50.983466, lng: 5.046139,
     audio: '/guitar.mp3',
   },
   {
     id: 2, number: 2,
-    title: 'Startpunt — Grote Markt',
-    description: 'We beginnen onze wandeling op de historische Grote Markt van Diest, omgeven door eeuwenoude gevels en de imposante Sint-Sulpitiuskerk.',
-    lat: 50.984953, lng: 5.042678,
+    title: 'Park Cerckel - 2,5 km',
+    description: 'We wandelen door het groene Park Cerckel, een rustige groene site in het midden van de stad.',
+    lat: 50.986722, lng: 5.050972,
     audio: '/guitar.mp3',
   },
   {
     id: 3, number: 3,
-    title: 'Begijnhof van Diest',
-    description: 'Het grootse begijnhof van Diest, beschermd UNESCO-werelderfgoed. Een oase van rust met pittoreske straatjes en middeleeuwse sfeer.',
-    lat: 50.988138, lng: 5.055224,
+    title: 'Boerenkrijgplein - 4,1 km',
+    description: 'Historische kanonnen met zicht op het water.',
+    lat: 50.989544, lng: 5.063342,
     audio: '/guitar.mp3',
   },
   {
     id: 4, number: 4,
-    title: 'Halve Maan',
-    description: 'De indrukwekkende Halve Maan-verdediging, een buitengewoon bewaard stuk van de historische stadsverdediging van Diest.',
-    lat: 50.989500, lng: 5.063393,
+    title: 'Bankje Wallen - 4,6 km',
+    description: 'Een rustig bankje vlak bij het zwembad van Diest',
+    lat: 50.987034, lng: 5.063065,
     audio: '/guitar.mp3',
   },
   {
     id: 5, number: 5,
-    title: 'Historische Wallen',
-    description: 'Langs de pittoreske wallen wandelen we verder. Hier kon je eeuwen geleden de hele stad overzien.',
-    lat: 50.988978, lng: 5.060366,
+    title: 'Ooievaarsnesten en losloopweide- 5 km',
+    description: 'Hondenlosloopweide en ooievaarsnesten, in het Webbkoms Broek',
+    lat: 50.988205, lng: 5.065631,
     audio: '/guitar.mp3',
   },
   {
     id: 6, number: 6,
-    title: 'Citadel van Diest',
-    description: 'Het eindpunt van onze wandeling: de imposante citadel met een weids uitzicht over Diest en de omliggende Demervallei.',
-    lat: 50.984440, lng: 5.052240,
+    title: 'Herdenkingsbankje Aaron - 5,9 km',
+    description: 'Aan het ouderlijk huis bij Luc en An.',
+    lat: 50.987418, lng: 5.061068,
+    audio: '/guitar.mp3',
+  },
+  {
+    id: 7, number: 7,
+    title: 'Amfitheater — 6,15 km',
+    description: 'Het amfitheater aan het begin van de Warande.',
+    lat: 50.985661, lng: 5.059276,
+    audio: '/guitar.mp3',
+  },
+  {
+    id: 8, number: 8,
+    title: 'Witte poort warande — 6,8 km',
+    description: 'We wandelen door domein de Warande',
+    lat: 50.984162, lng: 5.055469,
+    audio: '/guitar.mp3',
+  },
+  {
+    id: 9, number: 9,
+    title: 'Scoutslokalen Sint-Jan — 7,2 km',
+    description: 'Langs de scoutslokalen',
+    lat: 50.982481, lng: 5.055274,
     audio: '/guitar.mp3',
   },
 ];
@@ -110,6 +131,17 @@ function makeMarkerIcon(L: any, number: number, selected: boolean) {
   });
 }
 
+function haversineMeters(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371000;
+  const toRad = (v: number) => (v * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 function computeBearing(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const toRad = (v: number) => (v * Math.PI) / 180;
   const toDeg = (v: number) => (v * 180) / Math.PI;
@@ -123,7 +155,7 @@ function computeBearing(lat1: number, lng1: number, lat2: number, lng2: number):
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function makeArrowIcon(L: any, bearingDeg: number) {
-  const size = 20;
+  const size = 18;
   return L.divIcon({
     className: '',
     html: `<div style="
@@ -131,9 +163,17 @@ function makeArrowIcon(L: any, bearingDeg: number) {
       display:flex;align-items:center;justify-content:center;
       transform:rotate(${bearingDeg}deg);
     ">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="#0000CD" style="filter:drop-shadow(0 1px 2px rgba(0,0,205,0.45));">
-        <path d="M12 2 L20 20 L12 15.5 L4 20 Z" />
-      </svg>
+      <div style="
+        width:15px;height:15px;
+        background:white;
+        border-radius:50%;
+        display:flex;align-items:center;justify-content:center;
+        box-shadow:0 1px 4px rgba(0,0,205,0.4), 0 0 0 1px rgba(0,0,205,0.25);
+      ">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="#0000CD" style="margin-top:-1px;">
+          <path d="M12 2 L20 20 L12 15.5 L4 20 Z" />
+        </svg>
+      </div>
     </div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
@@ -218,11 +258,20 @@ function WandelRouteContent() {
           map.fitBounds(routeLine.getBounds(), { padding: [32, 32] });
         }
 
-        // Direction arrows, evenly spaced along the track
-        const ARROW_COUNT = 8;
+        // Direction arrows, evenly spaced by real-world distance along the track
+        const ARROW_SPACING_M = 600;
         const LOOKAHEAD = 5;
-        for (let i = 1; i <= ARROW_COUNT; i++) {
-          const idx = Math.round((i / (ARROW_COUNT + 1)) * (coords.length - 1));
+        const cumulative = [0];
+        for (let i = 1; i < coords.length; i++) {
+          cumulative.push(
+            cumulative[i - 1] +
+              haversineMeters(coords[i - 1][0], coords[i - 1][1], coords[i][0], coords[i][1])
+          );
+        }
+        const totalLength = cumulative[cumulative.length - 1];
+        for (let dist = ARROW_SPACING_M; dist < totalLength; dist += ARROW_SPACING_M) {
+          const idx = cumulative.findIndex((d) => d >= dist);
+          if (idx <= 0) continue;
           const aheadIdx = Math.min(idx + LOOKAHEAD, coords.length - 1);
           if (aheadIdx === idx) continue;
           const bearing = computeBearing(
