@@ -12,11 +12,18 @@ type RoutePoint = {
   description: string;
   lat: number;
   lng: number;
-  audio: string;
+  spotifyUrl: string;
+  // Real Spotify track id -> renders the inline embed player instead of the plain link.
+  // Leave unset for points that don't have a real track yet.
+  spotifyEmbedId?: string;
 };
 
 const EVENT_DATE = new Date('2026-08-29T00:00:00');
 const isEventDay = () => Date.now() >= EVENT_DATE.getTime();
+
+// DEV ONLY: keeps the Spotify links clickable while we're building/testing.
+// Set back to false before the event so links stay locked until isEventDay().
+const DEV_UNLOCK_SPOTIFY_LINKS = true;
 
 const GPX_PATH = '/gpx/wandelroute-idsvdo.gpx';
 
@@ -36,72 +43,74 @@ const ROUTE_POINTS: RoutePoint[] = [
     title: 'Citadel — start en eindpunt',
     description: 'Het vertrek- en aankomstpunt van de wandeling: de imposante Citadel van Diest.',
     lat: 50.983466, lng: 5.046139,
-    audio: '/guitar.mp3',
+    spotifyUrl: 'https://open.spotify.com/track/1MoA0TNVdveasxnR6c2JqZ',
+    spotifyEmbedId: '1MoA0TNVdveasxnR6c2JqZ',
   },
   {
     id: 2, number: 2,
     title: 'Park Cerckel - 2,5 km',
     description: 'We wandelen door het groene Park Cerckel, een rustige groene site in het midden van de stad.',
     lat: 50.986722, lng: 5.050972,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 3, number: 3,
     title: 'Boerenkrijgplein - 4,1 km',
     description: 'Historische kanonnen met zicht op het water.',
     lat: 50.989544, lng: 5.063342,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 4, number: 4,
     title: 'Bankje Wallen - 4,6 km',
     description: 'Een rustig bankje vlak bij het zwembad van Diest',
     lat: 50.987034, lng: 5.063065,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 5, number: 5,
     title: 'Ooievaarsnesten en losloopweide- 5 km',
     description: 'Hondenlosloopweide en ooievaarsnesten, in het Webbkoms Broek',
     lat: 50.988205, lng: 5.065631,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/2VxeLyX666F8uXCJ0dZF8B?si=123707e3466047fe',
   },
   {
     id: 6, number: 6,
     title: 'Herdenkingsbankje Aaron - 5,9 km',
     description: 'Aan het ouderlijk huis bij Luc en An.',
     lat: 50.987418, lng: 5.061068,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 7, number: 7,
     title: 'Amfitheater — 6,15 km',
     description: 'Het amfitheater aan het begin van de Warande.',
     lat: 50.985661, lng: 5.059276,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 8, number: 8,
     title: 'Witte poort warande — 6,8 km',
     description: 'We wandelen door domein de Warande',
     lat: 50.984162, lng: 5.055469,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
   {
     id: 9, number: 9,
     title: 'Scoutslokalen Sint-Jan — 7,2 km',
     description: 'Langs de scoutslokalen',
     lat: 50.982481, lng: 5.055274,
-    audio: '/guitar.mp3',
+    // TODO: replace with the real Spotify track link for this point
+    spotifyUrl: 'https://open.spotify.com/track/REPLACE_ME',
   },
 ];
-
-function formatTime(s: number): string {
-  if (!s || isNaN(s)) return '0:00';
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${sec.toString().padStart(2, '0')}`;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function makeMarkerIcon(L: any, number: number, selected: boolean) {
@@ -204,21 +213,18 @@ function WandelRouteContent() {
     }
   }, [router]);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const spotifyLinkRef = useRef<HTMLDivElement>(null);
+  const [spotifyTooltipPos, setSpotifyTooltipPos] = useState<{ top: number; left: number } | null>(null);
 
-  const playButtonRef = useRef<HTMLDivElement>(null);
-  const [playTooltipPos, setPlayTooltipPos] = useState<{ top: number; left: number } | null>(null);
-
-  const showPlayTooltip = useCallback(() => {
-    const rect = playButtonRef.current?.getBoundingClientRect();
+  const showSpotifyTooltip = useCallback(() => {
+    const rect = spotifyLinkRef.current?.getBoundingClientRect();
     if (!rect) return;
-    setPlayTooltipPos({ top: rect.top, left: rect.left + rect.width / 2 });
+    setSpotifyTooltipPos({ top: rect.top, left: rect.left + rect.width / 2 });
   }, []);
 
-  const hidePlayTooltip = useCallback(() => setPlayTooltipPos(null), []);
+  const hideSpotifyTooltip = useCallback(() => setSpotifyTooltipPos(null), []);
+
+  const spotifyUnlocked = DEV_UNLOCK_SPOTIFY_LINKS || isEventDay();
 
   // Init map
   useEffect(() => {
@@ -325,62 +331,9 @@ function WandelRouteContent() {
     });
   }, [selected]);
 
-  // Stop audio on unmount (e.g. navigating to another page)
-  useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-    };
-  }, []);
-
-  // Load audio when selected point changes
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.ontimeupdate = null;
-      audioRef.current.onloadedmetadata = null;
-      audioRef.current.onended = null;
-      audioRef.current = null;
-    }
-    setPlaying(false);
-    setCurrentTime(0);
-    setDuration(0);
-
-    if (!selected) return;
-
-    const audio = new Audio(selected.audio);
-    audioRef.current = audio;
-    audio.onloadedmetadata = () => setDuration(audio.duration);
-    audio.ontimeupdate = () => setCurrentTime(audio.currentTime);
-    audio.onended = () => setPlaying(false);
-  }, [selected]);
-
-  const togglePlay = useCallback(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (audio.paused) {
-      audio.play().then(() => setPlaying(true)).catch(console.error);
-    } else {
-      audio.pause();
-      setPlaying(false);
-    }
-  }, []);
-
-  const seek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = parseFloat(e.target.value);
-    setCurrentTime(audio.currentTime);
-  }, []);
-
   const closePanel = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setPlaying(false);
-    }
     selectPoint(null);
   }, [selectPoint]);
-
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-[#FBF0E9]">
@@ -499,56 +452,58 @@ function WandelRouteContent() {
                   </button>
                 </div>
 
-                {/* Audio player */}
-                <div className="mt-4 flex items-center gap-3">
-                  {/* Play / pause */}
-                  <div
-                    ref={playButtonRef}
-                    className="flex-shrink-0"
-                    onMouseEnter={!isEventDay() ? showPlayTooltip : undefined}
-                    onMouseLeave={!isEventDay() ? hidePlayTooltip : undefined}
-                  >
-                    <button
-                      onClick={togglePlay}
-                      disabled={!isEventDay()}
-                      aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-                      className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0000CD] text-white shadow-lg shadow-[#0000CD]/25 transition-all hover:bg-[#0000B0] hover:scale-[1.05] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#0000CD] disabled:hover:scale-100"
-                    >
-                      {playing ? (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                          <rect x="6" y="4" width="4" height="16" rx="1.5" />
-                          <rect x="14" y="4" width="4" height="16" rx="1.5" />
-                        </svg>
-                      ) : (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-px" aria-hidden="true">
-                          <path d="M5 3.8v16.4a.8.8 0 0 0 1.2.7l13-8.2a.8.8 0 0 0 0-1.4l-13-8.2A.8.8 0 0 0 5 3.8z" />
-                        </svg>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Progress */}
-                  <div className="flex flex-1 items-center gap-2">
-                    <span className="w-9 flex-shrink-0 text-right text-xs tabular-nums text-[#0000CD]/45">
-                      {formatTime(currentTime)}
-                    </span>
-                    <div className="relative flex-1">
-                      <input
-                        type="range"
-                        min={0}
-                        max={duration || 100}
-                        value={currentTime}
-                        onChange={seek}
-                        className="h-1.5 w-full cursor-pointer appearance-none rounded-full [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0000CD] [&::-webkit-slider-thumb]:shadow-sm"
-                        style={{
-                          background: `linear-gradient(to right, #0000CD ${progress}%, rgba(0,0,205,0.15) ${progress}%)`,
-                        }}
+                {/* Spotify link */}
+                <div
+                  ref={spotifyLinkRef}
+                  className="mt-4"
+                  onMouseEnter={!spotifyUnlocked ? showSpotifyTooltip : undefined}
+                  onMouseLeave={!spotifyUnlocked ? hideSpotifyTooltip : undefined}
+                >
+                  {spotifyUnlocked ? (
+                    selected.spotifyEmbedId ? (
+                      <iframe
+                        key={selected.spotifyEmbedId}
+                        title={`Spotify: ${selected.title}`}
+                        style={{ borderRadius: 12, border: 0 }}
+                        src={`https://open.spotify.com/embed/track/${selected.spotifyEmbedId}?utm_source=generator`}
+                        width="100%"
+                        height="152"
+                        allowFullScreen
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                        loading="lazy"
                       />
-                    </div>
-                    <span className="w-9 flex-shrink-0 text-xs tabular-nums text-[#0000CD]/45">
-                      {formatTime(duration)}
-                    </span>
-                  </div>
+                    ) : (
+                    <a
+                      href={selected.spotifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex w-full items-center gap-3 rounded-full bg-[#1DB954] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1DB954]/25 transition-all hover:bg-[#1ED760] hover:scale-[1.01] active:scale-[0.99]"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="flex-shrink-0">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                      </svg>
+                      <span className="flex-1 text-left">Beluister op Spotify</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0">
+                        <path d="M7 17L17 7M7 7h10v10" />
+                      </svg>
+                    </a>
+                    )
+                  ) : (
+                    <button
+                      disabled
+                      aria-label="Spotify-link nog niet beschikbaar"
+                      className="flex w-full cursor-not-allowed items-center gap-3 rounded-full bg-[#1DB954]/35 px-4 py-3 text-sm font-semibold text-white/80"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="flex-shrink-0">
+                        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+                      </svg>
+                      <span className="flex-1 text-left">Beluister op Spotify</span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0">
+                        <rect x="5" y="11" width="14" height="9" rx="1.5" />
+                        <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
 
                 {/* Navigation between points */}
@@ -605,13 +560,13 @@ function WandelRouteContent() {
           )}
         </div>
 
-        {/* Play button tooltip — rendered outside the panel so it's never clipped */}
-        {playTooltipPos && (
+        {/* Spotify link tooltip — rendered outside the panel so it's never clipped */}
+        {spotifyTooltipPos && (
           <div
             className="pointer-events-none fixed z-[2000] w-48 -translate-x-1/2 -translate-y-[calc(100%+8px)] rounded-lg bg-[#0000CD] px-3 py-2 text-center text-xs font-medium text-white shadow-lg"
-            style={{ top: playTooltipPos.top, left: playTooltipPos.left }}
+            style={{ top: spotifyTooltipPos.top, left: spotifyTooltipPos.left }}
           >
-            Deze functie wordt geactiveerd op de dag van de wandeling
+            Deze link wordt geactiveerd op de dag van de wandeling
             <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-[#0000CD]" />
           </div>
         )}
