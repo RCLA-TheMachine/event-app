@@ -62,6 +62,12 @@ export default function Nav() {
           >
             Goed doel
           </a>
+          <a
+            href="/muziek-en-fotos"
+            className="px-4 py-2 rounded-full text-sm font-semibold text-[#0000CD]/75 hover:bg-[#0000CD]/8 hover:text-[#0000CD] transition-colors"
+          >
+            Muziek &amp; foto&apos;s
+          </a>
 
           <a href="https://idsvdo.stager.co/shop/idsvdo" target="_blank" rel="noopener noreferrer">
             <button className="subpixel-antialiased ml-2 inline-flex items-center justify-center rounded-full bg-[#0000CD] px-5 py-2 text-sm font-bold text-white shadow-md transition-all hover:bg-[#0000B8] hover:shadow-lg active:scale-95 cursor-pointer">
@@ -113,6 +119,13 @@ export default function Nav() {
             className="flex items-center px-5 py-3 text-sm font-semibold text-[#0000CD]/80 hover:bg-[#0000CD]/5 hover:text-[#0000CD] transition-colors"
           >
             Goed doel
+          </a>
+          <a
+            href="/muziek-en-fotos"
+            onClick={closeMobile}
+            className="flex items-center px-5 py-3 text-sm font-semibold text-[#0000CD]/80 hover:bg-[#0000CD]/5 hover:text-[#0000CD] transition-colors"
+          >
+            Muziek &amp; foto&apos;s
           </a>
 
           <div className="mt-2 border-t border-[#0000CD]/8 px-5 pt-3 pb-1">
