@@ -3,7 +3,7 @@
 import Nav from '../components/Nav';
 
 const SPOTIFY_PLAYLIST_URL = 'https://open.spotify.com/playlist/3q9ak7XUtHOHfeeAalEKEi';
-const EVENTPIX_URL = 'https://www.eventpix.photo/';
+const EVENTPIX_URL = 'https://www.eventpix.photo/upload/hlWb5_wcg6m3SifM8B2A3g';
 
 function SpotifyIcon() {
   return (

@@ -9,12 +9,13 @@ import 'leaflet/dist/leaflet.css';
 // - spotify-embed: Spotify's own inline player (title/artist/art all shown by Spotify)
 // - spotify-link:  a "Beluister op Spotify" pill with the song title + artist, opens in a new tab
 // - poem:          plain text, read in place — no audio. Leave title/text unset if not written yet.
-// - audio:         the original local mp3 player (play/pause + scrubber)
+// - audio:         the local mp3 player (play/pause + scrubber); optionally paired with a
+//                  YouTube link below it (e.g. a video version of the same recording)
 type PointMedia =
   | { type: 'spotify-embed'; trackId: string; songTitle: string; artist: string }
   | { type: 'spotify-link'; url: string; songTitle: string; artist: string; youtubeUrl?: string }
   | { type: 'poem'; title?: string; text?: string }
-  | { type: 'audio'; src: string };
+  | { type: 'audio'; src: string; youtubeUrl?: string; youtubeLabel?: string };
 
 type RoutePoint = {
   id: number;
@@ -179,7 +180,7 @@ om ons even te laten glimlachen.`,
     title: 'Scoutslokalen Sint-Jan — 7,2 km',
     description: 'Langs de scoutslokalen',
     lat: 50.982481, lng: 5.055274,
-    media: { type: 'audio', src: '/Avondlied.mp3' },
+    media: { type: 'audio', src: '/Avondlied.mp3', youtubeUrl: 'https://www.youtube.com/watch?v=4yQAsJ3V6XQ', youtubeLabel: 'Bekijk de instrumentale versie op YouTube' },
   },
 ];
 
@@ -279,10 +280,11 @@ function SpotifyIcon({ muted }: { muted?: boolean } = {}) {
 }
 
 // Brand-colored regardless of surrounding text color — the one spot of
-// YouTube red in an otherwise subtle, on-brand button.
-function YouTubeIcon() {
+// YouTube red in an otherwise subtle, on-brand button. `muted` drops it
+// back to currentColor for the locked/disabled placeholder state.
+function YouTubeIcon({ muted }: { muted?: boolean } = {}) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" aria-hidden="true" className="flex-shrink-0">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill={muted ? 'currentColor' : '#FF0000'} aria-hidden="true" className="flex-shrink-0">
       <path d="M23.498 6.186a2.994 2.994 0 0 0-2.112-2.117C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.386.524A2.994 2.994 0 0 0 .502 6.186 31.03 31.03 0 0 0 0 12a31.03 31.03 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.112 2.117c1.881.524 9.386.524 9.386.524s7.505 0 9.386-.524a2.994 2.994 0 0 0 2.112-2.117A31.03 31.03 0 0 0 24 12a31.03 31.03 0 0 0-.502-5.814zM9.75 15.568V8.432L15.818 12 9.75 15.568z" />
     </svg>
   );
@@ -652,49 +654,77 @@ function WandelRouteContent() {
                     onMouseLeave={!mediaUnlocked ? hideMediaTooltip : undefined}
                   >
                     {selected.media.type === 'audio' ? (
-                      <div className="flex items-center gap-3">
-                        {/* Play / pause */}
-                        <button
-                          onClick={togglePlay}
-                          disabled={!mediaUnlocked}
-                          aria-label={playing ? 'Pauzeren' : 'Afspelen'}
-                          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#0000CD] text-white shadow-lg shadow-[#0000CD]/25 transition-all hover:bg-[#0000B0] hover:scale-[1.05] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#0000CD] disabled:hover:scale-100"
-                        >
-                          {playing ? (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                              <rect x="6" y="4" width="4" height="16" rx="1.5" />
-                              <rect x="14" y="4" width="4" height="16" rx="1.5" />
-                            </svg>
-                          ) : (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-px" aria-hidden="true">
-                              <path d="M5 3.8v16.4a.8.8 0 0 0 1.2.7l13-8.2a.8.8 0 0 0 0-1.4l-13-8.2A.8.8 0 0 0 5 3.8z" />
-                            </svg>
-                          )}
-                        </button>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-3">
+                          {/* Play / pause */}
+                          <button
+                            onClick={togglePlay}
+                            disabled={!mediaUnlocked}
+                            aria-label={playing ? 'Pauzeren' : 'Afspelen'}
+                            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#0000CD] text-white shadow-lg shadow-[#0000CD]/25 transition-all hover:bg-[#0000B0] hover:scale-[1.05] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#0000CD] disabled:hover:scale-100"
+                          >
+                            {playing ? (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <rect x="6" y="4" width="4" height="16" rx="1.5" />
+                                <rect x="14" y="4" width="4" height="16" rx="1.5" />
+                              </svg>
+                            ) : (
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="translate-x-px" aria-hidden="true">
+                                <path d="M5 3.8v16.4a.8.8 0 0 0 1.2.7l13-8.2a.8.8 0 0 0 0-1.4l-13-8.2A.8.8 0 0 0 5 3.8z" />
+                              </svg>
+                            )}
+                          </button>
 
-                        {/* Progress */}
-                        <div className="flex flex-1 items-center gap-2">
-                          <span className="w-9 flex-shrink-0 text-right text-xs tabular-nums text-[#0000CD]/45">
-                            {formatTime(currentTime)}
-                          </span>
-                          <div className="relative flex-1">
-                            <input
-                              type="range"
-                              min={0}
-                              max={duration || 100}
-                              value={currentTime}
-                              onChange={seek}
-                              disabled={!mediaUnlocked}
-                              className="h-1.5 w-full cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0000CD] [&::-webkit-slider-thumb]:shadow-sm"
-                              style={{
-                                background: `linear-gradient(to right, #0000CD ${progress}%, rgba(0,0,205,0.15) ${progress}%)`,
-                              }}
-                            />
+                          {/* Progress */}
+                          <div className="flex flex-1 items-center gap-2">
+                            <span className="w-9 flex-shrink-0 text-right text-xs tabular-nums text-[#0000CD]/45">
+                              {formatTime(currentTime)}
+                            </span>
+                            <div className="relative flex-1">
+                              <input
+                                type="range"
+                                min={0}
+                                max={duration || 100}
+                                value={currentTime}
+                                onChange={seek}
+                                disabled={!mediaUnlocked}
+                                className="h-1.5 w-full cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#0000CD] [&::-webkit-slider-thumb]:shadow-sm"
+                                style={{
+                                  background: `linear-gradient(to right, #0000CD ${progress}%, rgba(0,0,205,0.15) ${progress}%)`,
+                                }}
+                              />
+                            </div>
+                            <span className="w-9 flex-shrink-0 text-xs tabular-nums text-[#0000CD]/45">
+                              {formatTime(duration)}
+                            </span>
                           </div>
-                          <span className="w-9 flex-shrink-0 text-xs tabular-nums text-[#0000CD]/45">
-                            {formatTime(duration)}
-                          </span>
                         </div>
+
+                        {/* Optional YouTube counterpart (e.g. a video version of the same recording) */}
+                        {selected.media.youtubeUrl && (
+                          mediaUnlocked ? (
+                            <a
+                              href={selected.media.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex w-full items-center gap-3 rounded-full border border-[#0000CD]/15 bg-white/70 px-4 py-3 text-sm font-semibold text-[#0000CD] backdrop-blur-sm transition-all hover:bg-white hover:border-[#0000CD]/25 active:scale-[0.99]"
+                            >
+                              <YouTubeIcon />
+                              <span className="flex-1 text-left">{selected.media.youtubeLabel ?? 'Bekijk op YouTube'}</span>
+                              <ExternalLinkIcon />
+                            </a>
+                          ) : (
+                            <button
+                              disabled
+                              aria-label="Nog niet beschikbaar"
+                              className="flex w-full cursor-not-allowed items-center gap-3 rounded-full border border-[#0000CD]/10 bg-[#0000CD]/5 px-4 py-3 text-sm font-semibold text-[#0000CD]/40"
+                            >
+                              <YouTubeIcon muted />
+                              <span className="flex-1 text-left">Binnenkort beschikbaar</span>
+                              <LockIcon />
+                            </button>
+                          )
+                        )}
                       </div>
                     ) : mediaUnlocked ? (
                       selected.media.type === 'spotify-embed' ? (
