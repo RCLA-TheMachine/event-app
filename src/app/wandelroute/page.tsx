@@ -12,7 +12,7 @@ import 'leaflet/dist/leaflet.css';
 // - audio:         the original local mp3 player (play/pause + scrubber)
 type PointMedia =
   | { type: 'spotify-embed'; trackId: string; songTitle: string; artist: string }
-  | { type: 'spotify-link'; url: string; songTitle: string; artist: string }
+  | { type: 'spotify-link'; url: string; songTitle: string; artist: string; youtubeUrl?: string }
   | { type: 'poem'; title?: string; text?: string }
   | { type: 'audio'; src: string };
 
@@ -51,14 +51,14 @@ const ROUTE_POINTS: RoutePoint[] = [
     title: 'Citadel — start en eindpunt',
     description: 'Het vertrek- en aankomstpunt van de wandeling: de imposante Citadel van Diest.',
     lat: 50.983466, lng: 5.046139,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/1MoA0TNVdveasxnR6c2JqZ', songTitle: 'Jackie Down the Line', artist: 'Fontaines D.C.' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/1MoA0TNVdveasxnR6c2JqZ', songTitle: 'Jackie Down the Line', artist: 'Fontaines D.C.', youtubeUrl: 'https://www.youtube.com/watch?v=3AoOfJP3r40' },
   },
   {
     id: 2, number: 2,
     title: 'Park Cerckel - 2,5 km',
     description: 'We wandelen door het groene Park Cerckel, een rustige groene site in het midden van de stad.',
     lat: 50.986722, lng: 5.050972,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/0WQiDwKJclirSYG9v5tayI', songTitle: 'There Is a Light That Never Goes Out', artist: 'The Smiths' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/0WQiDwKJclirSYG9v5tayI', songTitle: 'There Is a Light That Never Goes Out', artist: 'The Smiths', youtubeUrl: 'https://www.youtube.com/watch?v=siO6dkqidc4' },
   },
   {
     id: 3, number: 3,
@@ -68,37 +68,54 @@ const ROUTE_POINTS: RoutePoint[] = [
     media: {
       type: 'poem',
       title: 'Waar jij nog loopt',
-      text: `In elke straat waar we vandaag voorbijgaan, lijkt jouw lach nog even mee te wandelen. Die lach die altijd net iets té luid was, en altijd precies op het juiste moment kwam.
+      text: `In elke straat waar we vandaag voorbijgaan, 
+      lijkt jouw lach nog even mee te wandelen.
+      Die lach die altijd net iets té luid was, 
+      en altijd precies op het juiste moment kwam.
 
-Je was iemand die het gewone bijzonder maakte, die een dag zomaar lichter kon kleuren. Met een grap die niemand zag aankomen, of een gekke stoot waarvan we nog steeds niet weten hoe je ermee wegkwam.
+Je was iemand die het gewone bijzonder maakte, 
+die een dag zomaar lichter kon kleuren. 
+Met een grap die niemand zag aankomen, 
+of een gekke stoot waarvan we nog steeds niet weten hoe je ermee wegkwam.
 
-En ja, jij was altijd de laatste die naar huis ging. De pintjes die je "eigenlijk niet meer ging pakken", maar toch pakte. De avonden die langer werden omdat jij bleef, en omdat niemand wilde dat jij al weg was.
+En ja, jij was altijd de laatste die naar huis ging.
+De pintjes die je "eigenlijk niet meer ging pakken",
+maar toch pakte.
+De avonden die langer werden omdat jij bleef,
+en omdat niemand wilde dat jij al weg was.
 
-Terwijl wij verder stappen, loopt jouw warmte gewoon met ons mee. In het ritme van onze passen, in het zachte ruisen van de wind langs de huizen, in de herinnering aan hoe jij zelfs stilte nog gezellig kon maken.
+Terwijl wij verder stappen,
+loopt jouw warmte gewoon met ons mee.
+In het ritme van onze passen,
+in het zachte ruisen van de wind langs de huizen,
+in de herinnering aan hoe jij zelfs stilte nog gezellig kon maken.
 
-Vandaag dragen we jou verder, in elke stap, in elke lach die onverwacht terugkomt, en in alles wat jij ooit licht maakte zonder dat je het zelf doorhad.`,
-    },
+Vandaag dragen we jou verder,
+in elke stap,
+in elke lach die onverwacht terugkomt,
+en in alles wat jij ooit licht maakte zonder dat je het zelf doorhad.`,
+  },
   },
   {
     id: 4, number: 4,
     title: 'Bankje Wallen - 4,6 km',
     description: 'Een rustig bankje vlak bij het zwembad van Diest',
     lat: 50.987034, lng: 5.063065,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/6ppjs6gQ1N67aE5ydwwr2u', songTitle: 'In My Head', artist: 'The Haunted Youth' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/6ppjs6gQ1N67aE5ydwwr2u', songTitle: 'In My Head', artist: 'The Haunted Youth', youtubeUrl: 'https://www.youtube.com/watch?v=cwARniFSgY4' },
   },
   {
     id: 5, number: 5,
     title: 'Ooievaarsnesten en losloopweide- 5 km',
     description: 'Hondenlosloopweide en ooievaarsnesten, in het Webbkoms Broek',
     lat: 50.988205, lng: 5.065631,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/2VxeLyX666F8uXCJ0dZF8B', songTitle: 'Shallow', artist: 'Lady Gaga, Bradley Cooper' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/2VxeLyX666F8uXCJ0dZF8B', songTitle: 'Shallow', artist: 'Lady Gaga, Bradley Cooper', youtubeUrl: 'https://www.youtube.com/watch?v=bo_efYhYU2A' },
   },
   {
     id: 6, number: 6,
     title: 'Herdenkingsbankje Aaron - 5,9 km',
     description: 'Aan het ouderlijk huis bij Luc en An.',
     lat: 50.987418, lng: 5.061068,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/3DNXN5fPRdkYm64oCdV8L6', songTitle: '(Ghost) Riders in the Sky', artist: 'Johnny Cash' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/3ST1SVHTxxiGodhUeASN3h', songTitle: '(Ghost) Riders in the Sky (Live)', artist: 'The Highwaymen', youtubeUrl: 'https://www.youtube.com/watch?v=nOWjX4BpC24' },
   },
   {
     id: 7, number: 7,
@@ -108,17 +125,46 @@ Vandaag dragen we jou verder, in elke stap, in elke lach die onverwacht terugkom
     media: {
       type: 'poem',
       title: 'Voor iemand die licht bracht',
-      text: `Je was het soort mens dat een kamer binnenkwam en zonder moeite iets openbrak, een glimlach, een grap, een sfeer die meteen klopte.
+      text: `Je was het soort mens
+      dat een kamer binnenkwam
+      en zonder moeite iets openbrak,
+      een glimlach, een grap, een sfeer die meteen klopte.
 
-Je was een perfectionist, maar dan op de mooiste manier: als jij iets deed, moest het goed zijn, moest het leuk zijn, moest het leven even voelen alsof het vanzelf ging.
+Je was een perfectionist,
+maar dan op de mooiste manier:
+als jij iets deed,
+moest het goed zijn,
+moest het leuk zijn,
+moest het leven even voelen alsof het vanzelf ging.
 
-En dan waren er die avonden. Die avonden waarop jij, met een pintje in de hand, altijd degene was die zei: "Nog eentje." En dat was nooit waar, maar altijd precies wat we nodig hadden.
+En dan waren er die avonden.
+Die avonden waarop jij,
+met een pintje in de hand,
+altijd degene was die zei:
+"Nog eentje."
+En dat was nooit waar,
+maar altijd precies wat we nodig hadden.
 
-Vandaag wandelen we langs jouw plekken, en het voelt alsof de stad jou nog een beetje vasthoudt. In een café waar je te luid vertelde, in een straat waar je ooit een gekke stoot uithaalde, in een hoek waar je stond te lachen om iets dat alleen jij kon verzinnen.
+Vandaag wandelen we langs jouw plekken,
+en het voelt alsof de stad jou nog een beetje vasthoudt.
+In een café waar je te luid vertelde,
+in een straat waar je ooit een gekke stoot uithaalde,
+in een hoek waar je stond te lachen
+om iets dat alleen jij kon verzinnen.
 
-Niet omdat je hier bent, maar omdat je hier was op een manier die blijft. Je liet sporen achter in mensen, in momenten, in de lucht zelf, lijkt het soms.
+Niet omdat je hier bent,
+maar omdat je hier was
+op een manier die blijft.
+Je liet sporen achter
+in mensen,in momenten,
+in de lucht zelf, lijkt het soms.
 
-En terwijl we verder stappen, voelen we dat jouw licht nog steeds ergens tussen ons hangt niet fel, niet dwingend, maar precies genoeg om ons even te laten glimlachen.`,
+En terwijl we verder stappen,
+voelen we dat jouw licht
+nog steeds ergens tussen ons hangt
+niet fel, niet dwingend,
+maar precies genoeg
+om ons even te laten glimlachen.`,
     },
   },
   {
@@ -126,14 +172,14 @@ En terwijl we verder stappen, voelen we dat jouw licht nog steeds ergens tussen 
     title: 'Witte poort warande — 6,8 km',
     description: 'We wandelen door domein de Warande',
     lat: 50.984162, lng: 5.055469,
-    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/60a0Rd6pjrkxjPbaKzXjfq', songTitle: 'In the End', artist: 'Linkin Park' },
+    media: { type: 'spotify-link', url: 'https://open.spotify.com/track/60a0Rd6pjrkxjPbaKzXjfq', songTitle: 'In the End', artist: 'Linkin Park', youtubeUrl: 'https://www.youtube.com/watch?v=eVTXPUF4Oz4' },
   },
   {
     id: 9, number: 9,
     title: 'Scoutslokalen Sint-Jan — 7,2 km',
     description: 'Langs de scoutslokalen',
     lat: 50.982481, lng: 5.055274,
-    media: { type: 'audio', src: '/guitar.mp3' },
+    media: { type: 'audio', src: '/Avondlied.mp3' },
   },
 ];
 
@@ -221,10 +267,23 @@ function makeArrowIcon(L: any, bearingDeg: number) {
   });
 }
 
-function SpotifyIcon() {
+// Brand-colored regardless of surrounding text color — the one spot of
+// Spotify green in an otherwise subtle, on-brand button. `muted` drops it
+// back to currentColor for the locked/disabled placeholder state.
+function SpotifyIcon({ muted }: { muted?: boolean } = {}) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="flex-shrink-0">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill={muted ? 'currentColor' : '#1DB954'} aria-hidden="true" className="flex-shrink-0">
       <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
+    </svg>
+  );
+}
+
+// Brand-colored regardless of surrounding text color — the one spot of
+// YouTube red in an otherwise subtle, on-brand button.
+function YouTubeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF0000" aria-hidden="true" className="flex-shrink-0">
+      <path d="M23.498 6.186a2.994 2.994 0 0 0-2.112-2.117C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.386.524A2.994 2.994 0 0 0 .502 6.186 31.03 31.03 0 0 0 0 12a31.03 31.03 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.112 2.117c1.881.524 9.386.524 9.386.524s7.505 0 9.386-.524a2.994 2.994 0 0 0 2.112-2.117A31.03 31.03 0 0 0 24 12a31.03 31.03 0 0 0-.502-5.814zM9.75 15.568V8.432L15.818 12 9.75 15.568z" />
     </svg>
   );
 }
@@ -651,27 +710,44 @@ function WandelRouteContent() {
                           loading="lazy"
                         />
                       ) : (
-                        <a
-                          href={selected.media.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex w-full items-center gap-3 rounded-full bg-[#1DB954] px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1DB954]/25 transition-all hover:bg-[#1ED760] hover:scale-[1.01] active:scale-[0.99]"
-                        >
-                          <SpotifyIcon />
-                          <span className="min-w-0 flex-1 text-left">
-                            <span className="block truncate">{selected.media.songTitle}</span>
-                            <span className="block truncate text-xs font-normal text-white/75">{selected.media.artist}</span>
-                          </span>
-                          <ExternalLinkIcon />
-                        </a>
+                        <div className="flex flex-col gap-2">
+                          <a
+                            href={selected.media.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex w-full items-center gap-3 rounded-full border border-[#0000CD]/15 bg-white/70 px-4 py-3 text-sm font-semibold text-[#0000CD] backdrop-blur-sm transition-all hover:bg-white hover:border-[#0000CD]/25 active:scale-[0.99]"
+                          >
+                            <SpotifyIcon />
+                            <span className="min-w-0 flex-1 text-left">
+                              <span className="block truncate">{selected.media.songTitle}</span>
+                              <span className="block truncate text-xs font-normal text-[#0000CD]/55">{selected.media.artist}</span>
+                            </span>
+                            <ExternalLinkIcon />
+                          </a>
+                          {selected.media.youtubeUrl && (
+                            <a
+                              href={selected.media.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex w-full items-center gap-3 rounded-full border border-[#0000CD]/15 bg-white/70 px-4 py-3 text-sm font-semibold text-[#0000CD] backdrop-blur-sm transition-all hover:bg-white hover:border-[#0000CD]/25 active:scale-[0.99]"
+                            >
+                              <YouTubeIcon />
+                              <span className="min-w-0 flex-1 text-left">
+                                <span className="block truncate">{selected.media.songTitle}</span>
+                                <span className="block truncate text-xs font-normal text-[#0000CD]/55">{selected.media.artist}</span>
+                              </span>
+                              <ExternalLinkIcon />
+                            </a>
+                          )}
+                        </div>
                       )
                     ) : (
                       <button
                         disabled
                         aria-label="Nog niet beschikbaar"
-                        className="flex w-full cursor-not-allowed items-center gap-3 rounded-full bg-[#1DB954]/35 px-4 py-3 text-sm font-semibold text-white/80"
+                        className="flex w-full cursor-not-allowed items-center gap-3 rounded-full border border-[#0000CD]/10 bg-[#0000CD]/5 px-4 py-3 text-sm font-semibold text-[#0000CD]/40"
                       >
-                        <SpotifyIcon />
+                        <SpotifyIcon muted />
                         <span className="flex-1 text-left">Binnenkort beschikbaar</span>
                         <LockIcon />
                       </button>
