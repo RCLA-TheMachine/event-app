@@ -113,7 +113,7 @@ en in alles wat jij ooit licht maakte zonder dat je het zelf doorhad.`,
   },
   {
     id: 6, number: 6,
-    title: 'Herdenkingsbankje Aaron - 5,9 km',
+    title: 'Herdenkingsbankje Aäron - 5,9 km',
     description: 'Aan het ouderlijk huis bij Luc en An.',
     lat: 50.987418, lng: 5.061068,
     media: { type: 'spotify-link', url: 'https://open.spotify.com/track/3ST1SVHTxxiGodhUeASN3h', songTitle: '(Ghost) Riders in the Sky (Live)', artist: 'The Highwaymen', youtubeUrl: 'https://www.youtube.com/watch?v=nOWjX4BpC24' },
