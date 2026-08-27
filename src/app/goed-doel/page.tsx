@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Nav from '../components/Nav';
 import InstagramIcon from '../components/InstagramIcon';
 
@@ -50,11 +51,21 @@ export default function GoedDoel() {
           <h2 className="mb-3 text-xl font-bold text-[#0000CD] sm:text-2xl">
             Onze sponsors
           </h2>
+          <div className="mb-5 flex justify-center">
+            <div className="inline-flex rounded-xl bg-white p-4">
+              <Image
+                src="/logo_bamps_laevers.jpeg"
+                alt="Bamps-Laevers Verzekeringen"
+                width={646}
+                height={475}
+                className="h-auto w-40 sm:w-48"
+              />
+            </div>
+          </div>
           <p className="mb-5 leading-relaxed text-[#0000CD]/70">
-            Momenteel hebben we nog geen sponsors aan boord, maar elke bijdrage is welkom.
-            Wil je dit initiatief steunen en je logo hier mee in de kijker zetten? Download
-            ons sponsorformulier en bezorg het ingevuld terug — hier komen binnenkort onze
-            sponsors te staan.
+            Met dank aan Bamps-Laevers Verzekeringen voor hun steun aan dit initiatief. Wil
+            je zelf ook sponsoren en je logo hier mee in de kijker zetten? Download ons
+            sponsorformulier en bezorg het ingevuld terug.
           </p>
           <a
             href="/Sponsorformulier.docx"
